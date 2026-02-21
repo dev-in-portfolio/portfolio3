@@ -25,8 +25,37 @@
   var NX_PORTAL_ID = "nxDropdownPortalV2";
   var NX_OPEN_ATTR = "data-open";
 
-  // Space above the fixed topnav (prevents it from kissing the very top edge)
-  var NX_TOP_GAP = 8;
+  // Do NOT push the bar down with extra top-gap.
+  // The only allowed vertical offset is the "safe top" contract (body padding-top).
+  var NX_TOP_GAP = 0;
+
+  // Any page can opt-out of the top nav entirely.
+  // - <html data-nx-topnav="off">
+  // - <body class="nx-no-topnav">
+  var isTopNavDisabled = function () {
+    try {
+      var de = document.documentElement;
+      if (de && de.getAttribute && de.getAttribute("data-nx-topnav") === "off") return true;
+      var b = document.body;
+      if (b && b.classList && b.classList.contains("nx-no-topnav")) return true;
+    } catch (_) {}
+    return false;
+  };
+
+  var teardownNavIfPresent = function () {
+    try {
+      var nav = document.querySelector("nav.nxTopNav");
+      if (nav && nav.parentNode) nav.parentNode.removeChild(nav);
+    } catch (_) {}
+    try { closeAllDrops(null); } catch (_) {}
+    try {
+      document.documentElement.classList.remove("nx-has-topnav");
+      document.body && document.body.classList.remove("nx-has-topnav");
+      document.documentElement.style.removeProperty("--nxTopNavPx");
+      document.documentElement.style.removeProperty("--nxTopNavH");
+      document.documentElement.style.removeProperty("--labShellActualH");
+    } catch (_) {}
+  };
 
   var ensureDropdownPortal = function () {
     var p = document.getElementById(NX_PORTAL_ID);
@@ -400,6 +429,11 @@
   var applyingNav = false;
 
   var applyNav = async function () {
+    // Map/constellation and any other opt-out pages should never show the bar.
+    if (isTopNavDisabled()) {
+      teardownNavIfPresent();
+      return;
+    }
 var nav = document.querySelector("nav.nxTopNav");
 if (!nav) {
   // Some pages (especially hub pages) don't include a nav placeholder.
@@ -448,20 +482,30 @@ if (!nav) {
       var rootPrefix = await findRootPrefix();
       window.NX_ROOT_PREFIX = rootPrefix;
 
-      // If nav markup isn't present, build it
+      // If nav markup isn't present, build it.
+      // NOTE: Per request, remove the "✦ NEXUS" brand label from the bar.
       if (!nav.querySelector(".nxPills")) {
-        nav.innerHTML = '<div class="nxInner"><a class="nxBrand" href="/"><span class="nxBrandMark">✦</span><span class="nxBrandText">NEXUS</span></a><div class="nxPills"></div></div>';
+        nav.innerHTML = '<div class="nxInner"><div class="nxPills"></div></div>';
       }
-
-      // Brand link -> root-aware
-      var brand = nav.querySelector(".nxBrand");
-      if (brand) brand.setAttribute("href", join(rootPrefix, ""));
 
       var pillsHost = nav.querySelector(".nxPills");
       if (!pillsHost) return;
       pillsHost.innerHTML = "";
 
       // Landing hubs are the single source of truth (no dropdown data lists here).
+
+      function mkIconPill(href, imgSrc, altText){
+        var a = document.createElement("a");
+        a.className = "nxPill nxIconPill";
+        a.href = href;
+        var img = document.createElement("img");
+        img.src = imgSrc;
+        img.alt = altText || "Nexus";
+        img.loading = "eager";
+        img.decoding = "async";
+        a.appendChild(img);
+        return a;
+      }
 
       function mkPill(label, href) {
         var a = document.createElement("a");
@@ -471,20 +515,17 @@ if (!nav) {
         return a;
       }
 
-      // Home (direct)
       pillsHost.appendChild(mkPill("Home", join(rootPrefix, "")));
 
       // Landing hubs (no dropdowns)
       pillsHost.appendChild(mkPill("Apps", join(rootPrefix, "apps/")));
-      pillsHost.appendChild(mkPill("Docs", join(rootPrefix, "docs/")));
       pillsHost.appendChild(mkPill("Utilities", join(rootPrefix, "tools/")));
+      pillsHost.appendChild(mkPill("Capabilities", join(rootPrefix, "capabilities/")));
 
       // Direct links
       pillsHost.appendChild(mkPill("About", join(rootPrefix, "about/")));
       pillsHost.appendChild(mkPill("Contact", join(rootPrefix, "contact/")));
-      pillsHost.appendChild(mkPill("Agents", join(rootPrefix, "apps/agents/")));
-      // Agents (dashboard app)
-      pillsHost.appendChild(mkPill("Agents", join(rootPrefix, "apps/agents/")));
+      // NOTE: Agents lives under the Apps landing hub; no direct pill here (avoids duplicates).
 
       // --- Safe Top Offset Contract ---
       // Measure the rendered topnav height and publish a global CSS variable every app can consume.
@@ -496,12 +537,10 @@ if (!nav) {
           var navH = rect ? rect.height : (nav ? (nav.offsetHeight || 0) : 0);
           if (!navH) return;
 
-          // Cushion so app HUDs don't kiss the bar
-          var cushion = 18;
+          // Keep the safe-top contract tight.
+          // Keep this tight. The bar already has internal padding; any extra cushion reads as "random empty space".
+          var cushion = 0;
           var topPx = Math.max(0, Math.round(navH + cushion));
-
-          // Publish the top gap (kept separate so CSS can include safe-area inset cleanly)
-          document.documentElement.style.setProperty("--nxTopGap", String(NX_TOP_GAP) + "px");
 
           // Publish vars (CSS computes --nxSafeTop from --nxTopNavPx + safe-area inset)
           document.documentElement.style.setProperty("--nxTopNavPx", topPx + "px");
@@ -512,24 +551,10 @@ if (!nav) {
           document.documentElement.classList.add("nx-has-topnav");
           try { document.body && document.body.classList.add("nx-has-topnav"); } catch (_) {}
 
-          // Spacer reserves physical space even when body has overflow hidden.
-          // Using a spacer avoids "content starts under the bar" on odd layouts.
-          var spacerId = "nxTopNavSpacer";
-          var spacer = document.getElementById(spacerId);
-          if (!spacer) {
-            spacer = document.createElement("div");
-            spacer.id = spacerId;
-            spacer.style.width = "100%";
-            spacer.style.pointerEvents = "none";
-            // insert directly after nav if possible
-            try { nav.insertAdjacentElement("afterend", spacer); } catch (_) {}
-          }
-          spacer.style.height = "var(--nxSafeTop)";
-
           // Fullscreen app helper: for known full-viewport shells, reduce height so UI isn't clipped.
           // Only touch likely app roots to avoid breaking normal pages.
           var appRoot = document.querySelector("body > #app, body > #root, body > main, body > .app, body > .wrap, body > .root, body > .page, body > .container");
-          if (appRoot && appRoot !== nav && appRoot !== spacer) {
+          if (appRoot && appRoot !== nav) {
             var cs = window.getComputedStyle ? window.getComputedStyle(appRoot) : null;
             if (cs) {
               var looksViewport = (cs.height === "100vh" || cs.minHeight === "100vh" || cs.maxHeight === "100vh");
@@ -573,14 +598,26 @@ if (!nav) {
 
   // Robust init: nav may be injected after DOMContentLoaded.
   var start = function () {
-    applyNav();
+    // Hardening: applyNav() is async; always attach a catch handler so any
+    // unexpected error does not surface as unhandledrejection (which can
+    // stop the nav from rendering on some browsers/WebViews).
+    var safeApplyNav = function () {
+      try {
+        var p = applyNav();
+        if (p && typeof p.catch === "function") {
+          p.catch(function () { /* swallow to prevent unhandledrejection */ });
+        }
+      } catch (_) { /* swallow */ }
+    };
+
+    safeApplyNav();
 
     // Retry a few frames in case another script injects nav late
     var tries = 0;
     var maxTries = 180; // ~3s at 60fps
     var rafRetry = function () {
       tries += 1;
-      applyNav();
+      safeApplyNav();
       var _n = document.querySelector("nav.nxTopNav");
       if (_n && _n.getAttribute("data-nx-nav") === "v2") return;
       if (tries < maxTries) requestAnimationFrame(rafRetry);
@@ -589,7 +626,7 @@ if (!nav) {
 
     // Watch DOM for nav insertion
     try {
-      var mo = new MutationObserver(function () { applyNav(); });
+      var mo = new MutationObserver(function () { safeApplyNav(); });
       mo.observe(document.documentElement, { childList: true, subtree: true });
     } catch (_) { }
   };
