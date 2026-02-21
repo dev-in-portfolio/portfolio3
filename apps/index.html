@@ -312,6 +312,20 @@
 </header>
 <main>
 
+<!-- Framework Districts banner (opens in new tab) -->
+<section class="frameworks-banner" style="margin: 18px 0 26px; padding: 14px 14px 16px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px);">
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+    <div>
+      <div style="font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-size:12px; opacity:0.85;">Framework Districts</div>
+      <div style="margin-top:6px; font-size:14px; opacity:0.9; max-width: 820px;">
+        Some apps live in separate ponds (Next.js, React, SvelteKit, Vue/Nuxt, Angular, Astro). Browse the framework hub for the full map.
+      </div>
+    </div>
+    <a href="https://dev-in-portfolio-frameworks.netlify.app/" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.10); text-decoration:none;">
+      <span aria-hidden="true" style="opacity:0.75;">↗</span>
+    </a>
+  </div>
+</section>
 <style>
 /* Landing page cards (About-style) */
 .landingGrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;margin: 14px auto 0;max-width: 1100px;padding: 0 14px;}
@@ -325,166 +339,69 @@
 @media (min-width: 1040px){
   .landingCard{grid-column: span 4;}
 }
+<!-- Framework Tile -->
+<div style="max-width:1100px;margin:0 auto 12px;padding:0 14px;">
+  <div style="font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.7;margin-bottom:6px;">
+    Framework
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <span class="nxPill">HTML</span>
+    <span class="nxPill">JavaScript</span>
+  </div>
+</div>
 </style>
 <section class="beat reveal" id="apps---tools">
 <h2 class="beatLine">APPS - TOOLS</h2>
-<p class="beatText">
-</p>
 <div class="landingGrid">
-  <a class="landingCard" href="/apps/agents/"><div class="landingCardTitle">Agents (UI)
-</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/alibi/"><div class="landingCardTitle">Alibi</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/prompt-vault/"><div class="landingCardTitle">Prompt Vault</div><div class="landingCardMeta">HTML/JS</div></a>
+  <a class="landingCard" href="/apps/agents/"><div class="landingCardTitle">Agents (UI)</div><div class="landingCardMeta">APPS - TOOLS</div></a>
+  <a class="landingCard" href="/apps/alibi/"><div class="landingCardTitle">Alibi</div><div class="landingCardMeta">APPS - TOOLS</div></a>
+  <a class="landingCard" href="/apps/prompt-vault/"><div class="landingCardTitle">Prompt Vault</div><div class="landingCardMeta">APPS - TOOLS</div></a>
  </div>
  </section>
 
-<section class="beat reveal" id="data-plus-systems">
-<h2 class="beatLine">DECISION SYSTEMS</h2>
-<p class="beatText">
-</p>
-<div class="landingGrid">
-  <a class="landingCard" href="/apps/coverage-compass/"><div class="landingCardTitle">Coverage Compass</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/ubr/"><div class="landingCardTitle">Ultimate Broker Route (UBR)</div><div class="landingCardMeta">HTML/JS</div></a>
-</div>
-</section>
-
 <section class="beat reveal" id="ai---knowledge">
 <h2 class="beatLine">AI / KNOWLEDGE</h2>
-<p class="beatText">
-</p>
 <div class="landingGrid">
-  <a class="landingCard" href="/apps/floraguide-ai/"><div class="landingCardTitle">FloraGuide AI
-</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/lingolive-ai/"><div class="landingCardTitle">LingoLive AI</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/oracle-pit/"><div class="landingCardTitle">Oracle Pit</div><div class="landingCardMeta">HTML/JS</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="knowledge---reference">
-<h2 class="beatLine">KNOWLEDGE / REFERENCE</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-codex-imagin-physics.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Codex of Imaginary Physics</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="knowledge---field-guide">
-<h2 class="beatLine">KNOWLEDGE / FIELD GUIDE</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-myths-facts-almanac.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Myths & Facts Almanac</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="builders---generators">
-<h2 class="beatLine">BUILDERS / GENERATORS</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-time-lock-page.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Time-Locked Page Forge</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="ui-labs---motion">
-<h2 class="beatLine">UI LABS / MOTION</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-motion-workshop.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Motion Workshop Bench</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="creative-tools---canvas">
-<h2 class="beatLine">CREATIVE TOOLS / CANVAS</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-friction-painter.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Friction Painter</div><div class="landingCardMeta">React</div></a>
-  <a class="landingCard" href="https://dev-in-portfolio-ink-that-remembers.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Ink That Remembers</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="generative---visual-systems">
-<h2 class="beatLine">GENERATIVE / VISUAL SYSTEMS</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-glow-garden.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Glow Garden</div><div class="landingCardMeta">React</div></a>
+  <a class="landingCard" href="/apps/floraguide-ai/"><div class="landingCardTitle">FloraGuide AI</div><div class="landingCardMeta">AI / KNOWLEDGE</div></a>
+  <a class="landingCard" href="/apps/lingolive-ai/"><div class="landingCardTitle">LingoLive AI</div><div class="landingCardMeta">AI / KNOWLEDGE</div></a>
+  <a class="landingCard" href="/apps/oracle-pit/"><div class="landingCardTitle">Oracle Pit</div><div class="landingCardMeta">AI / KNOWLEDGE</div></a>
 </div>
 </section>
 
 <section class="beat reveal" id="creative---media">
-<h2 class="beatLine">CREATIVE / MEDIA / STUDIO</h2>
-<p class="beatText">
-</p>
+<h2 class="beatLine">CREATIVE / MEDIA</h2>
 <div class="landingGrid">
-  <a class="landingCard" href="/apps/sleepystory/"><div class="landingCardTitle">SleepyStory</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/toonstudio/"><div class="landingCardTitle">ToonStudio</div><div class="landingCardMeta">HTML/JS</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="media---tools---editing">
-<h2 class="beatLine">MEDIA TOOLS / EDITING</h2>
-<p class="beatText">
-</p>
-<div class="landingGrid">
-  <a class="landingCard" href="/apps/splice/"><div class="landingCardTitle">Splice
-</div><div class="landingCardMeta">HTML/JS</div></a>
+  <a class="landingCard" href="/apps/splice/"><div class="landingCardTitle">Splice</div><div class="landingCardMeta">CREATIVE / MEDIA</div></a>
+  <a class="landingCard" href="/apps/sleepystory/"><div class="landingCardTitle">SleepyStory</div><div class="landingCardMeta">CREATIVE / MEDIA</div></a>
+  <a class="landingCard" href="/apps/toonstudio/"><div class="landingCardTitle">ToonStudio</div><div class="landingCardMeta">CREATIVE / MEDIA</div></a>
 </div>
 </section>
 
 <section class="beat reveal" id="real-time-render">
 <h2 class="beatLine">REAL-TIME RENDER</h2>
-<p class="beatText">
-</p>
 <div class="landingGrid">
-  <a class="landingCard" href="/apps/helios/"><div class="landingCardTitle">Helios</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/transit/"><div class="landingCardTitle">Transit</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/vortex/"><div class="landingCardTitle">Vortex</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/helix/"><div class="landingCardTitle">Helix</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/tectonic/"><div class="landingCardTitle">Tectonic</div><div class="landingCardMeta">HTML/JS</div></a>
+  <a class="landingCard" href="/apps/helios/"><div class="landingCardTitle">Helios</div><div class="landingCardMeta">REAL-TIME RENDER</div></a>
+  <a class="landingCard" href="/apps/transit/"><div class="landingCardTitle">Transit</div><div class="landingCardMeta">REAL-TIME RENDER</div></a>
+  <a class="landingCard" href="/apps/vortex/"><div class="landingCardTitle">Vortex</div><div class="landingCardMeta">REAL-TIME RENDER</div></a>
+  <a class="landingCard" href="/apps/helix/"><div class="landingCardTitle">Helix</div><div class="landingCardMeta">REAL-TIME RENDER</div></a>
+  <a class="landingCard" href="/apps/tectonic/"><div class="landingCardTitle">Tectonic</div><div class="landingCardMeta">REAL-TIME RENDER</div></a>
 </div>
 </section>
 
 <section class="beat reveal" id="interactive-sim">
 <h2 class="beatLine">INTERACTIVE SIM</h2>
-<p class="beatText">
-</p>
 <div class="landingGrid">
-  <a class="landingCard" href="/apps/aeon/"><div class="landingCardTitle">Aeon</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/magma/"><div class="landingCardTitle">Magma</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/string/"><div class="landingCardTitle">String</div><div class="landingCardMeta">HTML/JS</div></a>
+  <a class="landingCard" href="/apps/aeon/"><div class="landingCardTitle">Aeon</div><div class="landingCardMeta">INTERACTIVE SIM</div></a>
+  <a class="landingCard" href="/apps/magma/"><div class="landingCardTitle">Magma</div><div class="landingCardMeta">INTERACTIVE SIM</div></a>
+  <a class="landingCard" href="/apps/string/"><div class="landingCardTitle">String</div><div class="landingCardMeta">INTERACTIVE SIM</div></a>
 </div>
 </section>
 
-<section class="beat reveal" id="storyworld---explorer">
-<h2 class="beatLine">STORYWORLD / EXPLORER</h2>
+<section class="beat reveal" id="data-plus-systems">
+<h2 class="beatLine">DECISION SYSTEMS</h2>
 <div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-field-notes-altearth.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Field Notes: Alternate Earths</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="museum---experience">
-<h2 class="beatLine">MUSEUM / EXPERIENCE</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-the-long-walk.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">The Long Walk</div><div class="landingCardMeta">React</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="games---puzzles">
-<h2 class="beatLine">GAMES / PUZZLES / LOGIC</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-constraint-chess.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Constraint Chess</div><div class="landingCardMeta">React</div></a>
-  <a class="landingCard" href="https://dev-in-portfolio-riddle-room.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Riddle Rooms</div><div class="landingCardMeta">React</div></a>
-  <a class="landingCard" href="/apps/crossword-arena/"><div class="landingCardTitle">Crossword Arena</div><div class="landingCardMeta">HTML/JS</div></a>
-  <a class="landingCard" href="/apps/evening-epic-sudoku/"><div class="landingCardTitle">Evening Epic Sudoku</div><div class="landingCardMeta">HTML/JS</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="chaos">
-<h2 class="beatLine">CHAOS</h2>
-<p class="beatText">
-</p>
-<div class="landingGrid">
-  <a class="landingCard" href="/do-not-press.html"><div class="landingCardTitle">Do Not Press
-</div><div class="landingCardMeta">HTML/JS</div></a>
-</div>
-</section>
-
-<section class="beat reveal" id="training---reflex">
-<h2 class="beatLine">TRAINING / REFLEX</h2>
-<div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-reflex-trainer.netlify.app" target="_blank" rel="noopener"><div class="landingCardTitle">Reflex Trainer</div><div class="landingCardMeta">React</div></a>
+  <a class="landingCard" href="/apps/coverage-compass/"><div class="landingCardTitle">Coverage Compass</div><div class="landingCardMeta">DECISION SYSTEMS</div></a>
+  <a class="landingCard" href="/apps/ubr/"><div class="landingCardTitle">Ultimate Broker Route (UBR)</div><div class="landingCardMeta">DECISION SYSTEMS</div></a>
 </div>
 </section>
 
@@ -492,10 +409,18 @@
 <h2 class="beatLine">INFO</h2>
 <p class="beatText">Supporting pages and orientation.</p>
 <div class="landingGrid">
-  <a class="landingCard" href="https://dev-in-portfolio-about.netlify.app/"><div class="landingCardTitle">About</div><div class="landingCardMeta">HTML/JS</div></a>
+  <a class="landingCard" href="/about.html"><div class="landingCardTitle">About</div><div class="landingCardMeta">INFO</div></a>
 </div>
 </section>
 
+<section class="beat reveal" id="apps---fun">
+<h2 class="beatLine">GAMES &amp; WORD / LOGIC</h2>
+<div class="landingGrid">
+  <a class="landingCard" href="/do-not-press.html"><div class="landingCardTitle">Do Not Press</div><div class="landingCardMeta">GAMES &amp; WORD / LOGIC</div></a>
+  <a class="landingCard" href="/apps/crossword-arena/"><div class="landingCardTitle">Crossword Arena</div><div class="landingCardMeta">GAMES &amp; WORD / LOGIC</div></a>
+  <a class="landingCard" href="/apps/evening-epic-sudoku/"><div class="landingCardTitle">Evening Epic Sudoku</div><div class="landingCardMeta">GAMES &amp; WORD / LOGIC</div></a>
+</div>
+</section>
 </main>
 <script defer="defer" src="/shared/nexus-topnav-v2.js?v=54"></script>
 <script>
