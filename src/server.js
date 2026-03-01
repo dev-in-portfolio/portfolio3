@@ -545,6 +545,8 @@ app.use((error, req, res, _next) => {
   });
 });
 
-app.listen(PORT, () => {
+if (require.main === module) app.listen(PORT, () => {
   console.log(`PalmLedger API running on http://127.0.0.1:${PORT}`);
 });
+
+module.exports = app;
