@@ -3,6 +3,65 @@ const detailPanel = document.getElementById("detail-panel");
 const logPanel = document.getElementById("log-panel");
 const statusBar = document.getElementById("status-bar");
 
+const WEB_KEY = "dockyard.web.config.v1";
+const isElectron = Boolean(window.dockyard);
+const logListeners = [];
+const exitListeners = [];
+
+function defaultConfig() {
+  return {
+    repos: [],
+    presets: [{ name: "local", env: {} }],
+  };
+}
+
+function loadWebConfig() {
+  try {
+    const raw = localStorage.getItem(WEB_KEY);
+    return raw ? JSON.parse(raw) : defaultConfig();
+  } catch {
+    return defaultConfig();
+  }
+}
+
+function saveWebConfig(config) {
+  localStorage.setItem(WEB_KEY, JSON.stringify(config));
+}
+
+const api = isElectron
+  ? window.dockyard
+  : {
+      async loadConfig() {
+        return loadWebConfig();
+      },
+      async saveConfig(config) {
+        saveWebConfig(config);
+      },
+      async selectFolder() {
+        const value = window.prompt("Web mode: enter a repo label/path", "demo-repo");
+        return value ? value.trim() : "";
+      },
+      async checkNodeModules() {
+        return true;
+      },
+      async checkPort() {
+        return false;
+      },
+      async runRepo({ repo, command }) {
+        const line = `web mode: simulated run for ${repo.name} -> ${command}\n`;
+        logListeners.forEach((handler) => handler({ repoId: repo.id, line }));
+      },
+      async stopRepo(repoId) {
+        exitListeners.forEach((handler) => handler({ repoId, code: 0 }));
+      },
+      onLog(handler) {
+        logListeners.push(handler);
+      },
+      onExit(handler) {
+        exitListeners.push(handler);
+      },
+    };
+
 const state = {
   config: null,
   activeRepo: null,
@@ -31,18 +90,19 @@ function renderRepos() {
   });
 
   document.getElementById("add-repo").onclick = async () => {
-    const path = await window.dockyard.selectFolder();
+    const path = await api.selectFolder();
     if (!path) return;
+    const parts = path.split(/[\\/]/);
     const repo = {
       id: crypto.randomUUID(),
-      name: path.split("/").pop(),
+      name: parts[parts.length - 1] || path,
       path,
       commands: { dev: "npm run dev", build: "npm run build", test: "npm test", lint: "npm run lint" },
       ports: [3000],
       envPresetBindings: { local: ".env" },
     };
     state.config.repos.push(repo);
-    await window.dockyard.saveConfig(state.config);
+    await api.saveConfig(state.config);
     renderRepos();
   };
 }
@@ -85,8 +145,12 @@ function renderDetail() {
     repo.commands.build = document.getElementById("cmd-build").value.trim();
     repo.commands.test = document.getElementById("cmd-test").value.trim();
     repo.commands.lint = document.getElementById("cmd-lint").value.trim();
-    repo.ports = document.getElementById("repo-ports").value.split(",").map((p) => Number(p.trim())).filter(Boolean);
-    await window.dockyard.saveConfig(state.config);
+    repo.ports = document
+      .getElementById("repo-ports")
+      .value.split(",")
+      .map((p) => Number(p.trim()))
+      .filter(Boolean);
+    await api.saveConfig(state.config);
   };
 
   document.getElementById("run-dev").onclick = async () => {
@@ -95,18 +159,18 @@ function renderDetail() {
       const presetName = document.getElementById("preset-select").value;
       const preset = state.config.presets.find((p) => p.name === presetName);
       const overrides = parseOverrides(document.getElementById("env-overrides").value);
-      const portInUse = await window.dockyard.checkPort(repo.ports[0]);
+      const portInUse = await api.checkPort(repo.ports[0]);
       if (portInUse) {
         status.textContent = "Port already in use.";
         return;
       }
-      const hasModules = await window.dockyard.checkNodeModules(repo.path);
+      const hasModules = await api.checkNodeModules(repo.path);
       if (!hasModules) {
         status.textContent = "node_modules missing. Run install.";
         return;
       }
-      await window.dockyard.runRepo({ repo, command: repo.commands.dev, preset, overrides });
-      status.textContent = "Dev server started.";
+      await api.runRepo({ repo, command: repo.commands.dev, preset, overrides });
+      status.textContent = isElectron ? "Dev server started." : "Web mode simulated run started.";
       state.running[repo.id] = true;
       renderStatus();
     } catch (err) {
@@ -115,7 +179,7 @@ function renderDetail() {
   };
 
   document.getElementById("stop-dev").onclick = async () => {
-    await window.dockyard.stopRepo(repo.id);
+    await api.stopRepo(repo.id);
     state.running[repo.id] = false;
     renderStatus();
   };
@@ -139,29 +203,35 @@ function renderLogs() {
 }
 
 function renderStatus() {
-  statusBar.innerHTML = Object.entries(state.running)
+  const badges = Object.entries(state.running)
     .map(([id, running]) => {
       const repo = state.config.repos.find((r) => r.id === id);
       if (!repo) return "";
       return `<span>${repo.name}: ${running ? "running" : "stopped"}</span>`;
     })
     .join("");
+
+  const mode = isElectron ? "Desktop mode" : "Web preview mode";
+  statusBar.innerHTML = `<span>${mode}</span>${badges}`;
 }
 
-window.dockyard.onLog(({ repoId, line }) => {
+api.onLog(({ repoId, line }) => {
   const box = document.getElementById("log-box");
   if (!box) return;
   box.textContent += `[${repoId.slice(0, 4)}] ${line}`;
   box.scrollTop = box.scrollHeight;
 });
 
-window.dockyard.onExit(({ repoId, code }) => {
+api.onExit(({ repoId }) => {
   state.running[repoId] = false;
   renderStatus();
 });
 
 async function init() {
-  state.config = await window.dockyard.loadConfig();
+  state.config = await api.loadConfig();
+  if (!state.config?.repos || !state.config?.presets) {
+    state.config = defaultConfig();
+  }
   renderRepos();
   renderDetail();
   renderLogs();
