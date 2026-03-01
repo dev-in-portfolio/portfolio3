@@ -18,8 +18,10 @@ async function bootstrap() {
   app.enableCors({ exposedHeaders: ['X-Request-Id'] });
   app.useGlobalFilters(new DbExceptionFilter());
   const port = Number(process.env.PORT || 3017);
-  await app.listen(port);
+  await if (require.main === module) app.listen(port);
   console.log(`Snapshot Vault API running on http://127.0.0.1:${port}`);
 }
 
 bootstrap();
+
+module.exports = app;
