@@ -1,10 +1,10 @@
 <script lang="ts">
-  const releaseVersion = "v0.1.0";
+  const releaseVersion = "operator-ledger-v0.1.1";
   const releasesPage = "https://github.com/dev-in-portfolio/portfolio2/releases";
   const downloads = [
-    { os: "macOS", label: "Download for macOS", note: "Apple Silicon + Intel", href: "https://github.com/dev-in-portfolio/portfolio2/releases/latest/download/OperatorLedger-macOS.dmg" },
-    { os: "Windows", label: "Download for Windows", note: "x64 installer", href: "https://github.com/dev-in-portfolio/portfolio2/releases/latest/download/OperatorLedger-Windows-x64-setup.exe" },
-    { os: "Linux", label: "Download for Linux", note: "AppImage", href: "https://github.com/dev-in-portfolio/portfolio2/releases/latest/download/OperatorLedger-Linux-x86_64.AppImage" }
+    { os: "macOS", label: "Download for macOS", note: "Apple Silicon + Intel", href: "https://github.com/dev-in-portfolio/portfolio2/releases/download/operator-ledger-v0.1.1/OperatorLedger-macOS.dmg" },
+    { os: "Windows", label: "Download for Windows", note: "x64 installer", href: "https://github.com/dev-in-portfolio/portfolio2/releases/download/operator-ledger-v0.1.1/OperatorLedger-Windows-x64-setup.exe" },
+    { os: "Linux", label: "Download for Linux", note: "AppImage", href: "https://github.com/dev-in-portfolio/portfolio2/releases/download/operator-ledger-v0.1.1/OperatorLedger-Linux-x86_64.AppImage" }
   ];
 </script>
 

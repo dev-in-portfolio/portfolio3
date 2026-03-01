@@ -23,7 +23,7 @@
     },
     "bundle": {
       "active": true,
-      "identifier": "com.operator.ledger",
+      "identifier": "com.operator.ledger"
     }
   }
 }
