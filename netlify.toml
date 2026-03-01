@@ -5,3 +5,12 @@
 [build.environment]
   NODE_VERSION = "20"
   FRAMEWORK = "express"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
+  force = true
