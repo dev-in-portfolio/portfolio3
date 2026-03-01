@@ -17,7 +17,8 @@
     "ejs": "3.1.9",
     "express": "4.18.2",
     "helmet": "7.0.0",
-    "pg": "8.11.3"
+    "pg": "8.11.3",
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "3.0.3"
