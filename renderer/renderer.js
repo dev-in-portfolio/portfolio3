@@ -9,6 +9,8 @@ const saveProjectBtn = document.getElementById("save-project");
 const exportJsonBtn = document.getElementById("export-json");
 const exportPngBtn = document.getElementById("export-png");
 
+const isElectron = Boolean(window.mapstencil);
+
 const state = {
   projectPath: null,
   baseMap: null,
@@ -37,6 +39,7 @@ function renderTools() {
     <label>Layers</label>
     <div><input type="checkbox" id="toggle-pins" checked /> Pins</div>
     <div><input type="checkbox" id="toggle-routes" checked /> Routes</div>
+    <p>${isElectron ? "Desktop mode" : "Web preview mode"}</p>
   `;
   toolPanel.querySelectorAll(".tool-btn").forEach((btn) => {
     btn.onclick = () => setTool(btn.dataset.tool);
@@ -65,7 +68,11 @@ function renderDetails() {
     document.getElementById("save-pin").onclick = () => {
       pin.title = document.getElementById("pin-title").value;
       pin.note = document.getElementById("pin-note").value;
-      pin.tags = document.getElementById("pin-tags").value.split(",").map((t) => t.trim()).filter(Boolean);
+      pin.tags = document
+        .getElementById("pin-tags")
+        .value.split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
       render();
       scheduleSave();
     };
@@ -81,7 +88,11 @@ function renderDetails() {
     `;
     document.getElementById("save-route").onclick = () => {
       route.name = document.getElementById("route-name").value;
-      route.tags = document.getElementById("route-tags").value.split(",").map((t) => t.trim()).filter(Boolean);
+      route.tags = document
+        .getElementById("route-tags")
+        .value.split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
       render();
       scheduleSave();
     };
@@ -190,16 +201,53 @@ canvas.addEventListener("dblclick", () => {
   }
 });
 
+function pickFile(accept) {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = accept;
+    input.onchange = () => resolve(input.files?.[0] || null);
+    input.click();
+  });
+}
+
+function downloadText(filename, text, mime = "application/json") {
+  const blob = new Blob([text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 async function openMap() {
-  const filePath = await window.mapstencil.openImage();
-  if (!filePath) return;
-  const exists = await window.mapstencil.fileExists(filePath);
-  if (!exists) return;
+  if (isElectron) {
+    const filePath = await window.mapstencil.openImage();
+    if (!filePath) return;
+    const exists = await window.mapstencil.fileExists(filePath);
+    if (!exists) return;
+    const img = new Image();
+    img.src = `file://${filePath}`;
+    img.onload = () => {
+      state.image = img;
+      state.baseMap = { type: "image", path: filePath, width: img.width, height: img.height };
+      state.scale = 1;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      render();
+    };
+    return;
+  }
+
+  const file = await pickFile("image/*");
+  if (!file) return;
+  const url = URL.createObjectURL(file);
   const img = new Image();
-  img.src = `file://${filePath}`;
+  img.src = url;
   img.onload = () => {
     state.image = img;
-    state.baseMap = { type: "image", path: filePath, width: img.width, height: img.height };
+    state.baseMap = { type: "image", name: file.name, width: img.width, height: img.height, webUrl: url };
     state.scale = 1;
     canvas.width = img.width;
     canvas.height = img.height;
@@ -208,21 +256,48 @@ async function openMap() {
 }
 
 async function openProject() {
-  const project = await window.mapstencil.openProject();
-  if (!project) return;
-  state.projectPath = project.filePath;
-  state.baseMap = project.data.baseMap;
-  state.pins = project.data.pins || [];
-  state.routes = project.data.routes || [];
-  const img = new Image();
-  img.src = `file://${state.baseMap.path}`;
-  img.onload = () => {
-    state.image = img;
-    state.scale = 1;
-    canvas.width = img.width;
-    canvas.height = img.height;
+  if (isElectron) {
+    const project = await window.mapstencil.openProject();
+    if (!project) return;
+    state.projectPath = project.filePath;
+    state.baseMap = project.data.baseMap;
+    state.pins = project.data.pins || [];
+    state.routes = project.data.routes || [];
+    const img = new Image();
+    img.src = `file://${state.baseMap.path}`;
+    img.onload = () => {
+      state.image = img;
+      state.scale = 1;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      render();
+    };
+    return;
+  }
+
+  const file = await pickFile("application/json");
+  if (!file) return;
+  const text = await file.text();
+  const project = JSON.parse(text);
+  state.projectPath = null;
+  state.baseMap = project.baseMap;
+  state.pins = project.pins || [];
+  state.routes = project.routes || [];
+  state.active = null;
+  renderDetails();
+  if (state.baseMap?.webUrl) {
+    const img = new Image();
+    img.src = state.baseMap.webUrl;
+    img.onload = () => {
+      state.image = img;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      render();
+    };
+  } else {
+    alert("Project opened. Base map image cannot be restored in web mode unless webUrl is present.");
     render();
-  };
+  }
 }
 
 function projectData() {
@@ -237,6 +312,7 @@ function projectData() {
 let saveTimer;
 function scheduleSave() {
   clearTimeout(saveTimer);
+  if (!isElectron) return;
   saveTimer = setTimeout(() => {
     if (!state.projectPath) return;
     window.mapstencil.saveProject({ filePath: state.projectPath, data: projectData() });
@@ -245,19 +321,34 @@ function scheduleSave() {
 
 saveProjectBtn.onclick = async () => {
   if (!state.baseMap) return;
-  const path = await window.mapstencil.saveProject({ filePath: state.projectPath, data: projectData() });
-  if (path) state.projectPath = path;
+  if (isElectron) {
+    const path = await window.mapstencil.saveProject({ filePath: state.projectPath, data: projectData() });
+    if (path) state.projectPath = path;
+    return;
+  }
+  downloadText("mapstencil-project.json", JSON.stringify(projectData(), null, 2));
 };
 
 exportJsonBtn.onclick = async () => {
   if (!state.baseMap) return;
-  await window.mapstencil.exportJson(projectData());
+  if (isElectron) {
+    await window.mapstencil.exportJson(projectData());
+    return;
+  }
+  downloadText("mapstencil-export.json", JSON.stringify(projectData(), null, 2));
 };
 
 exportPngBtn.onclick = async () => {
   if (!state.baseMap) return;
   const dataUrl = canvas.toDataURL("image/png");
-  await window.mapstencil.exportPng(dataUrl);
+  if (isElectron) {
+    await window.mapstencil.exportPng(dataUrl);
+    return;
+  }
+  const a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = "mapstencil.png";
+  a.click();
 };
 
 openMapBtn.onclick = openMap;
