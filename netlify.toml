@@ -3,6 +3,6 @@
   publish = "public"
 
 [build.environment]
+  BACKEND = "supabase"
   NODE_VERSION = "20"
-  FRAMEWORK = "unknown"
-
+\1flutter\3
