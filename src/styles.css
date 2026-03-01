@@ -119,3 +119,8 @@ li + li {
     grid-template-columns: 1fr;
   }
 }
+
+.release-link {
+  color: var(--aqua);
+  text-decoration: underline;
+}
