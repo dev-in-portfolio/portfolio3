@@ -121,6 +121,8 @@ app.delete('/api/qwik-atlas/views/:id', requireDeviceKey, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+if (require.main === module) app.listen(PORT, () => {
   console.log(`Qwik Atlas API running on port ${PORT}`);
 });
+
+module.exports = app;
