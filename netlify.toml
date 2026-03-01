@@ -1,8 +1,23 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  ignore = "bash scripts/netlify-ignore.sh"
 
 [build.environment]
   NODE_VERSION = "20"
   FRAMEWORK = "vite"
+  NPM_FLAGS = "--include=dev"
 
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

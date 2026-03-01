@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
 import crypto from 'crypto';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 const { Pool } = pg;
 
@@ -17,6 +19,15 @@ const pool = new Pool({ connectionString: DATABASE_URL });
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '256kb' }));
+app.use((req, _res, next) => {
+  const fnPrefix = '/.netlify/functions/server';
+  if (req.url === fnPrefix) {
+    req.url = '/';
+  } else if (req.url.startsWith(`${fnPrefix}/`)) {
+    req.url = req.url.slice(fnPrefix.length);
+  }
+  next();
+});
 
 const MAX_PAGES = 10000;
 const MAX_CARDS = 500;
@@ -266,8 +277,15 @@ app.get('/api/cardpress/public/:publishedSlug', async (req, res) => {
   }
 });
 
-if (require.main === module) app.listen(PORT, () => {
-  console.log(`CardPress API running on port ${PORT}`);
-});
+const isDirectRun = (() => {
+  if (!process.argv[1]) return false;
+  return path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+})();
 
-module.exports = app;
+if (isDirectRun) {
+  app.listen(PORT, () => {
+    console.log(`CardPress API running on port ${PORT}`);
+  });
+}
+
+export default app;
