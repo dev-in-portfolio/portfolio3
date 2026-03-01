@@ -1,0 +1,11 @@
+[build]
+  command = "pip install -r requirements.txt && mkdir -p public && echo 'API' > public/index.html"
+  publish = "public"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/api"
+  status = 200
