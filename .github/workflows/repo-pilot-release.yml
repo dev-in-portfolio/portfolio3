@@ -21,17 +21,14 @@ jobs:
             os: ubuntu-22.04
             bundle: appimage
             artifact_name: RepoPilot-Linux-x86_64.AppImage
-            bundle_glob: src-tauri/target/release/bundle/appimage/*.AppImage
           - name: windows
             os: windows-latest
             bundle: nsis
             artifact_name: RepoPilot-Windows-x64-setup.exe
-            bundle_glob: src-tauri/target/release/bundle/nsis/*-setup.exe
           - name: macos
             os: macos-latest
             bundle: dmg
             artifact_name: RepoPilot-macOS.dmg
-            bundle_glob: src-tauri/target/release/bundle/dmg/*.dmg
 
     steps:
       - name: Checkout
@@ -101,7 +98,22 @@ jobs:
         shell: bash
         run: |
           mkdir -p release-assets
-          file_path=$(ls ${{ matrix.platform.bundle_glob }} | head -n 1)
+          case "${{ matrix.platform.name }}" in
+            linux)
+              file_path=$(find src-tauri/target -type f -name "*.AppImage" | head -n 1)
+              ;;
+            windows)
+              file_path=$(find src-tauri/target -type f -name "*-setup.exe" | head -n 1)
+              ;;
+            macos)
+              file_path=$(find src-tauri/target -type f -name "*.dmg" | head -n 1)
+              ;;
+          esac
+          if [ -z "${file_path:-}" ]; then
+            echo "No bundle file found. Available files under src-tauri/target:"
+            find src-tauri/target -type f | head -n 200
+            exit 1
+          fi
           cp "$file_path" "release-assets/${{ matrix.platform.artifact_name }}"
 
       - name: Upload CI artifact
