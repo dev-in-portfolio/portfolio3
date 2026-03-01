@@ -156,6 +156,8 @@ app.get('/api/switchboard/share/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+if (require.main === module) app.listen(PORT, () => {
   console.log(`Switchboard API running on port ${PORT}`);
 });
+
+module.exports = app;
