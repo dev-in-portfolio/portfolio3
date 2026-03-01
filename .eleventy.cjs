@@ -1,4 +1,12 @@
+const { DateTime } = require("luxon");
+
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addNunjucksFilter("date", (value, format = "yyyy") => {
+    const date = value instanceof Date ? value : new Date(value);
+    return DateTime.fromJSDate(date).toFormat(format);
+  });
+
+
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
 
   eleventyConfig.addCollection("patches", (collectionApi) => {
