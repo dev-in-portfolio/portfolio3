@@ -1,10 +1,8 @@
-# Althea
+# ReceiptBox
 
-ReceiptBox — local artifact vault for receipts, logs, and diffs with exportable bundles.
+ReceiptBox is distributed as a desktop app. This Netlify deploy is a landing/download page.
 
-## Run locally
-
-1. `npm install`
-2. `npm run dev`
-
-Artifacts are stored in `~/ReceiptBox`.
+Expected release asset names:
+- ReceiptBox-macOS.dmg
+- ReceiptBox-Windows-x64-setup.exe
+- ReceiptBox-Linux-x86_64.AppImage
