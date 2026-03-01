@@ -23,8 +23,7 @@
     },
     "bundle": {
       "active": true,
-      "identifier": "com.clipforge.app",
-      "icon": []
+      "identifier": "com.clipforge.app"
     }
   }
 }
