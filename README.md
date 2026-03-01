@@ -1,23 +1,8 @@
 # Operator Ledger
 
-Local-first decision and outcomes tracker built with Tauri (Rust + SQLite) and Svelte.
+Operator Ledger is a desktop-native app. This Netlify deploy is a landing/download page.
 
-## Features
-- Capture decisions with rationale and confidence
-- Attach outcomes and lessons learned
-- Timeline feed with filters
-- Quick insights (low confidence, failed experiments, pivots)
-- Export ledger to JSON
-
-## Dev Setup
-1. Install Node dependencies
-   - `pnpm install`
-2. Install Rust + Tauri prerequisites
-3. Run UI
-   - `pnpm run dev`
-4. Run Tauri app (after installing tauri-cli)
-   - `pnpm tauri dev`
-
-## Notes
-- SQLite database is stored in the Tauri app data directory.
-- `export_json` writes `ledger_export.json` alongside the DB.
+Expected release asset names:
+- OperatorLedger-macOS.dmg
+- OperatorLedger-Windows-x64-setup.exe
+- OperatorLedger-Linux-x86_64.AppImage
