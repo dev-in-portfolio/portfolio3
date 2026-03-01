@@ -99,26 +99,48 @@ jobs:
         run: |
           mkdir -p release-assets
           export PLATFORM="${{ matrix.platform.name }}"
-          file_path=$(python3 - <<'PY'
-          import glob, os
-          platform = os.environ["PLATFORM"]
-          patterns = {
-            "linux": ["src-tauri/target/**/*.deb", "src-tauri/target/**/*.AppImage"],
-            "windows": ["src-tauri/target/**/*.msi", "src-tauri/target/**/*-setup.exe", "src-tauri/target/release/*.exe"],
-            "macos": ["src-tauri/target/**/*.dmg"],
-          }[platform]
-          for pattern in patterns:
-            for path in glob.glob(pattern, recursive=True):
-              if not os.path.isfile(path):
-                continue
-              normalized = path.replace('\\\\', '/')
-              if '/.fingerprint/' in normalized:
-                continue
-              print(path)
-              raise SystemExit(0)
-          raise SystemExit(1)
-          PY
-          ) || true
+
+          find_bundle() {
+            python3 - <<'PY'
+            import glob, os
+            platform = os.environ["PLATFORM"]
+            patterns = {
+              "linux": [
+                "src-tauri/target/**/*.deb",
+                "src-tauri/target/**/*.AppImage",
+              ],
+              "windows": [
+                "src-tauri/target/**/*.msi",
+                "src-tauri/target/**/*-setup.exe",
+                "src-tauri/target/**/repo-pilot.exe",
+                "src-tauri/target/**/*.exe",
+              ],
+              "macos": [
+                "src-tauri/target/**/*.dmg",
+              ],
+            }[platform]
+
+            exclude_substrings = ["/.fingerprint/", "/build/", "/deps/"]
+            for pattern in patterns:
+              for path in glob.glob(pattern, recursive=True):
+                if not os.path.isfile(path):
+                  continue
+                normalized = path.replace('\\\\', '/')
+                if any(ex in normalized for ex in exclude_substrings):
+                  continue
+                print(path)
+                raise SystemExit(0)
+            raise SystemExit(1)
+            PY
+          }
+
+          file_path=$(find_bundle) || true
+
+          if [ -z "${file_path:-}" ] && [ "${{ matrix.platform.name }}" = "windows" ]; then
+            echo "No windows bundle found, building fallback binary with cargo"
+            cargo build --manifest-path src-tauri/Cargo.toml --release
+            file_path=$(find_bundle) || true
+          fi
 
           if [ -z "${file_path:-}" ]; then
             echo "No bundle file found. First 200 files under src-tauri/target:"
