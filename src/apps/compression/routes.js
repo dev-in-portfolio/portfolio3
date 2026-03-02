@@ -6,20 +6,21 @@ const { validatePayload } = require('../../utils/validate');
 const { compressText } = require('./service');
 
 const rateLimit = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 30 });
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 function createCompressionRouter() {
   const router = express.Router();
 
-  router.get('/', async (req, res) => {
+  router.get('/', asyncHandler(async (req, res) => {
     return res.renderView('index', {
       title: 'Compression',
       userKey: req.userKeyCookie,
       defaultLevels: [75, 50, 25],
       maxSentences: 60
     });
-  });
+  }));
 
-  router.get('/history', async (req, res) => {
+  router.get('/history', asyncHandler(async (req, res) => {
     const userKey = req.userKeyCookie;
     const { rows } = await db.query(
       'select id, options, result, created_at from compression_runs where user_key = $1 order by created_at desc limit 50',
@@ -31,9 +32,9 @@ function createCompressionRouter() {
       userKey,
       runs: rows
     });
-  });
+  }));
 
-  router.get('/run/:id', async (req, res) => {
+  router.get('/run/:id', asyncHandler(async (req, res) => {
     const userKey = req.userKeyCookie;
     const { rows } = await db.query(
       'select id, original, options, result, created_at from compression_runs where id = $1 and user_key = $2',
@@ -54,9 +55,9 @@ function createCompressionRouter() {
       userKey,
       run
     });
-  });
+  }));
 
-  router.post('/api/compress', requireUserKey, rateLimit, async (req, res) => {
+  router.post('/api/compress', requireUserKey, rateLimit, asyncHandler(async (req, res) => {
     const { error, value } = validatePayload(req.body);
     if (error) {
       return res.status(400).json({ error });
@@ -69,18 +70,18 @@ function createCompressionRouter() {
     );
 
     return res.json({ id: rows[0].id, result });
-  });
+  }));
 
-  router.get('/api/history', requireUserKey, async (req, res) => {
+  router.get('/api/history', requireUserKey, asyncHandler(async (req, res) => {
     const { rows } = await db.query(
       'select id, options, result, created_at from compression_runs where user_key = $1 order by created_at desc limit 50',
       [req.userKey]
     );
 
     return res.json({ runs: rows });
-  });
+  }));
 
-  router.get('/api/run/:id', requireUserKey, async (req, res) => {
+  router.get('/api/run/:id', requireUserKey, asyncHandler(async (req, res) => {
     const { rows } = await db.query(
       'select id, original, options, result, created_at from compression_runs where id = $1 and user_key = $2',
       [req.params.id, req.userKey]
@@ -92,16 +93,16 @@ function createCompressionRouter() {
     }
 
     return res.json({ run });
-  });
+  }));
 
-  router.delete('/api/run/:id', requireUserKey, async (req, res) => {
+  router.delete('/api/run/:id', requireUserKey, asyncHandler(async (req, res) => {
     await db.query(
       'delete from compression_runs where id = $1 and user_key = $2',
       [req.params.id, req.userKey]
     );
 
     return res.status(204).send();
-  });
+  }));
 
   return router;
 }

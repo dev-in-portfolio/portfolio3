@@ -1,5 +1,10 @@
-require('dotenv').config();
+try {
+  require('dotenv').config();
+} catch {
+  // Netlify provides env vars directly; dotenv is only needed for local dev.
+}
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
 const ejs = require('ejs');
@@ -10,7 +15,19 @@ const { createCompressionRouter } = require('./apps/compression/routes');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const VIEWS_DIR = path.join(__dirname, 'views');
+
+const candidateViews = [
+  path.join(process.cwd(), 'src', 'views'),
+  path.join(__dirname, 'views'),
+  path.join(__dirname, '..', 'src', 'views'),
+];
+const candidatePublic = [
+  path.join(process.cwd(), 'public'),
+  path.join(__dirname, '..', 'public'),
+  path.join(__dirname, '..', '..', 'public'),
+];
+const VIEWS_DIR = candidateViews.find((p) => fs.existsSync(p)) || candidateViews[0];
+const PUBLIC_DIR = candidatePublic.find((p) => fs.existsSync(p)) || candidatePublic[0];
 
 function parseCookies(cookieHeader = '') {
   const cookies = {};
@@ -40,7 +57,16 @@ applySecurity(app);
 app.use(compression());
 app.use(express.json({ limit: '256kb' }));
 app.use(express.urlencoded({ extended: true, limit: '256kb' }));
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use((req, _res, next) => {
+  const fnPrefix = '/.netlify/functions/server';
+  if (req.url === fnPrefix) {
+    req.url = '/';
+  } else if (req.url.startsWith(`${fnPrefix}/`)) {
+    req.url = req.url.slice(fnPrefix.length);
+  }
+  next();
+});
+app.use(express.static(PUBLIC_DIR));
 
 app.set('views', VIEWS_DIR);
 app.set('view engine', 'ejs');
