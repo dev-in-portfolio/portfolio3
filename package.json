@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/validate-targets.mjs && eleventy",
-    "dev": "eleventy --serve"
+    "build": "node scripts/validate-targets.mjs && eleventy --config=.eleventy.cjs",
+    "dev": "eleventy --config=.eleventy.cjs --serve"
   },
   "devDependencies": {
     "@11ty/eleventy": "2.0.1"
+  },
+  "dependencies": {
+    "luxon": "^3.4.4"
   }
 }

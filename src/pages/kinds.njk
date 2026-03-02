@@ -1,0 +1,13 @@
+---
+layout: layouts/base.njk
+title: "Kinds"
+permalink: "/kinds/index.html"
+---
+<section class="section">
+  <h2>Kinds</h2>
+  <div class="tags">
+    {% for kind in collections.kindList %}
+      <a href="/kinds/{{ kind }}/">{{ kind }}</a>
+    {% endfor %}
+  </div>
+</section>
