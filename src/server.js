@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const { helmet, compression } = require('./middleware/security');
 const causalityRoutes = require('./apps/causality/routes');
@@ -22,9 +23,21 @@ app.use((req, _res, next) => {
 });
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Netlify function bundles change __dirname, so resolve paths defensively.
+const candidateViews = [
+  path.join(process.cwd(), 'src', 'views'),
+  path.join(__dirname, 'views'),
+];
+const candidatePublic = [
+  path.join(process.cwd(), 'public'),
+  path.join(__dirname, '..', 'public'),
+];
+const viewsDir = candidateViews.find((p) => fs.existsSync(p)) || candidateViews[0];
+const publicDir = candidatePublic.find((p) => fs.existsSync(p)) || candidatePublic[0];
+
+app.set('views', viewsDir);
+app.use(express.static(publicDir));
 
 app.get('/', (req, res) => {
   res.render('index', { page: 'home' });
