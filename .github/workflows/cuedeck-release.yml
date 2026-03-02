@@ -3,6 +3,8 @@ name: CueDeck Release Build
 on:
   release:
     types: [published]
+  push:
+    branches: [cuedeck]
   workflow_dispatch:
 
 permissions:
