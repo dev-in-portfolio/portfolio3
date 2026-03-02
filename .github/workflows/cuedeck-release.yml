@@ -1,0 +1,59 @@
+name: CueDeck Release Build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Smoke test function handler
+        run: |
+          node -e "const m=require('./functions/server.js'); if (typeof m.handler !== 'function') { throw new Error('Netlify handler missing'); } console.log('handler-ok');"
+
+      - name: Package release artifacts
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p release/cuedeck
+          cp -r functions public sql src release/cuedeck/
+          cp README.md package.json pnpm-lock.yaml package-lock.json netlify.toml .env.example release/cuedeck/
+          tar -C release -czf "cuedeck-${TAG_NAME}-server.tar.gz" cuedeck
+          (cd release && zip -rq "../cuedeck-${TAG_NAME}-server.zip" cuedeck)
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuedeck-release-bundle-${{ github.ref_name }}
+          path: |
+            cuedeck-${{ github.ref_name }}-server.tar.gz
+            cuedeck-${{ github.ref_name }}-server.zip
+
+      - name: Attach artifacts to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            cuedeck-${{ github.ref_name }}-server.tar.gz
+            cuedeck-${{ github.ref_name }}-server.zip
