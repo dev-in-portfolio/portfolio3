@@ -16,6 +16,20 @@ body {
   color: var(--text);
 }
 
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #9ce3ff;
+}
+
 .site-header {
   display: flex;
   justify-content: space-between;
@@ -33,6 +47,11 @@ body {
   text-decoration: none;
 }
 
+.site-nav a:hover,
+.site-nav a:focus-visible {
+  color: var(--accent);
+}
+
 main { padding: 24px 32px 64px; }
 
 .section { margin-bottom: 32px; }
@@ -44,6 +63,10 @@ main { padding: 24px 32px 64px; }
   border-radius: 16px;
   padding: 16px;
   border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card h3 a {
+  color: var(--accent);
 }
 
 .tags span {

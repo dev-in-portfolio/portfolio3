@@ -4,20 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ block "title" . }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}" />
   </head>
   <body>
     <header class="site-header">
       <div>
-        <h1><a href="/">FieldManual</a></h1>
+        <h1><a href="{{ "/" | relLangURL }}">FieldManual</a></h1>
         <p>{{ .Site.Params.description }}</p>
       </div>
       <nav class="site-nav">
-        <a href="/playbooks/">Playbooks</a>
-        <a href="/runbooks/">Runbooks</a>
-        <a href="/checklists/">Checklists</a>
-        <a href="/postmortems/">Postmortems</a>
-        <a href="/systems/">Systems</a>
+        <a href="{{ "/playbooks/" | relLangURL }}">Playbooks</a>
+        <a href="{{ "/runbooks/" | relLangURL }}">Runbooks</a>
+        <a href="{{ "/checklists/" | relLangURL }}">Checklists</a>
+        <a href="{{ "/postmortems/" | relLangURL }}">Postmortems</a>
+        <a href="{{ "/systems/" | relLangURL }}">Systems</a>
+        <a href="{{ "/symptoms/" | relLangURL }}">Symptoms</a>
+        <a href="{{ "/fixes/" | relLangURL }}">Fixes</a>
       </nav>
     </header>
 
@@ -28,6 +30,6 @@
     <footer>
       <small>FieldManual • {{ now.Format "2006" }}</small>
     </footer>
-    <script src="/js/search.js"></script>
+    <script src="{{ "js/search.js" | relURL }}"></script>
   </body>
 </html>
