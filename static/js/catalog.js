@@ -1,6 +1,6 @@
 async function loadIndex() {
   try {
-    const res = await fetch('/items/index.json');
+    const res = await fetch('/items/items-index.json');
     if (!res.ok) return [];
     return await res.json();
   } catch {

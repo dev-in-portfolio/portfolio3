@@ -12,7 +12,7 @@
   <div class="cards" id="catalog-results">
     {{ range .Site.Data.items }}
     <article class="card">
-      <h3><a href="/items/{{ .slug }}/">{{ .title }}</a></h3>
+      <h3><a href="{{ printf "/items/%s/" .slug | relLangURL }}">{{ .title }}</a></h3>
       <p>{{ .summary }}</p>
       <div class="tags">
         {{ range .tags }}<span>{{ . }}</span>{{ end }}

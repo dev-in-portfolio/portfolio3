@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ block "title" . }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="{{ "css/styles.css" | relURL }}" />
   </head>
   <body>
     <header class="site-header">
       <div>
-        <h1><a href="/">AtlasShelf</a></h1>
+        <h1><a href="{{ "/" | relLangURL }}">AtlasShelf</a></h1>
         <p>{{ .Site.Params.description }}</p>
       </div>
       <nav class="site-nav">
-        <a href="/items/">Catalog</a>
-        <a href="/categories/">Categories</a>
-        <a href="/tags/">Tags</a>
+        <a href="{{ "/items/" | relLangURL }}">Catalog</a>
+        <a href="{{ "/categories/" | relLangURL }}">Categories</a>
+        <a href="{{ "/tags/" | relLangURL }}">Tags</a>
       </nav>
     </header>
 
@@ -26,6 +26,6 @@
     <footer>
       <small>AtlasShelf • {{ now.Format "2006" }}</small>
     </footer>
-    <script src="/js/catalog.js"></script>
+    <script src="{{ "js/catalog.js" | relURL }}"></script>
   </body>
 </html>

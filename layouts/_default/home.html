@@ -4,7 +4,7 @@
   <div class="cards">
     {{ range first 6 .Site.Data.items }}
     <article class="card">
-      <h3><a href="/items/{{ .slug }}/">{{ .title }}</a></h3>
+      <h3><a href="{{ printf "/items/%s/" .slug | relLangURL }}">{{ .title }}</a></h3>
       <p>{{ .summary }}</p>
       <div class="tags">
         {{ range .tags }}<span>{{ . }}</span>{{ end }}
