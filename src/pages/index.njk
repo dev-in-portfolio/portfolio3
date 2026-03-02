@@ -3,6 +3,16 @@ layout: layouts/base.njk
 title: "SpecForge"
 permalink: "/index.html"
 ---
+<section class="hero">
+  <h2>Specification Library</h2>
+  <p>Build-ready specs with status tracking, metadata tags, and implementation notes.</p>
+  <div class="meta-row">
+    <span class="badge">{{ specs | length }} specs</span>
+    <span class="badge">{{ collections.tagList | length }} tags</span>
+    <span class="badge">{{ collections.statusList | length }} statuses</span>
+  </div>
+</section>
+
 <div class="search-box">
   <input id="search-input" type="text" placeholder="Search specs" />
   <select id="status-filter">
