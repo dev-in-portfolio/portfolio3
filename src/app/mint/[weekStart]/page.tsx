@@ -44,7 +44,7 @@ export default function MintDetailPage() {
 
   async function loadMint() {
     const { data, error } = await supabase
-      .from('weekly_mints')
+      .from('sessionmint_weekly_mints')
       .select('id,week_start,total_seconds,session_count,flow_count,drag_count,top_tags,created_at')
       .eq('week_start', weekStart)
       .single();

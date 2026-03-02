@@ -43,7 +43,7 @@ export default function MintsPage() {
 
   async function loadMints() {
     const { data, error } = await supabase
-      .from('weekly_mints')
+      .from('sessionmint_weekly_mints')
       .select('id,week_start,total_seconds,session_count,flow_count,drag_count,top_tags,created_at')
       .order('week_start', { ascending: false });
     if (error) {
@@ -60,7 +60,7 @@ export default function MintsPage() {
   async function mintWeek() {
     setLoading(true);
     const weekStart = currentWeek.toISOString().slice(0, 10);
-    const { data, error } = await supabase.rpc('mint_week', { p_week_start: weekStart });
+    const { data, error } = await supabase.rpc('sessionmint_mint_week', { p_week_start: weekStart });
     if (error) {
       setStatus(error.message);
       setLoading(false);

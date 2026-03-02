@@ -32,7 +32,7 @@ export default function HistoryPage() {
 
   async function loadSessions() {
     const { data, error } = await supabase
-      .from('sessions')
+      .from('sessionmint_sessions')
       .select('id,started_at,ended_at,duration_seconds,tag,feel,note')
       .order('started_at', { ascending: false });
     if (error) {
@@ -48,7 +48,7 @@ export default function HistoryPage() {
 
   async function deleteSession(id: string) {
     if (!confirm('Delete this session?')) return;
-    const { error } = await supabase.from('sessions').delete().eq('id', id);
+    const { error } = await supabase.from('sessionmint_sessions').delete().eq('id', id);
     if (error) {
       setStatus(error.message);
       return;
@@ -60,7 +60,7 @@ export default function HistoryPage() {
     if (!confirm('Delete selected sessions?')) return;
     const ids = Object.entries(selected).filter(([, v]) => v).map(([id]) => id);
     if (!ids.length) return;
-    const { error } = await supabase.from('sessions').delete().in('id', ids);
+    const { error } = await supabase.from('sessionmint_sessions').delete().in('id', ids);
     if (error) {
       setStatus(error.message);
       return;

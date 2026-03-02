@@ -61,7 +61,7 @@ export default function SessionPage() {
 
   async function loadRecent() {
     const { data, error } = await supabase
-      .from('sessions')
+      .from('sessionmint_sessions')
       .select('id,started_at,ended_at,duration_seconds,tag,feel,note')
       .order('started_at', { ascending: false })
       .limit(5);
@@ -95,7 +95,7 @@ export default function SessionPage() {
       return;
     }
     const { data, error } = await supabase
-      .from('sessions')
+      .from('sessionmint_sessions')
       .insert({
         user_id: userData.user.id,
         started_at: activeStart.toISOString(),
