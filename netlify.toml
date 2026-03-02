@@ -8,9 +8,11 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  external_node_modules = ["ejs"]
   included_files = [
     "public/**",
-    "src/views/**"
+    "src/views/**",
+    "node_modules/ejs/**"
   ]
 
 [[redirects]]
