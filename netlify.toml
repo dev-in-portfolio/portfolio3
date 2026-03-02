@@ -2,9 +2,18 @@
   command = "echo 'Static FormFoundry deploy'"
   publish = "public"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [build.environment]
   NODE_VERSION = "20"
   FRAMEWORK = "angular"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/api/:splat"
+  status = 200
 
 [[redirects]]
   from = "/*"
