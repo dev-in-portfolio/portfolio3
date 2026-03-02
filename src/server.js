@@ -1,17 +1,41 @@
-require("dotenv").config();
+try {
+  require("dotenv").config();
+} catch {
+  // Netlify provides env vars directly; dotenv is optional there.
+}
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const { security, rateLimit } = require("./middleware/security");
 const angleRoutes = require("./apps/angle/routes");
 const { getPool } = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const candidateViews = [
+  path.join(process.cwd(), "src", "views"),
+  path.join(__dirname, "views"),
+];
+const candidatePublic = [
+  path.join(process.cwd(), "public"),
+  path.join(__dirname, "..", "public"),
+];
+const viewsDir = candidateViews.find((p) => fs.existsSync(p)) || candidateViews[0];
+const publicDir = candidatePublic.find((p) => fs.existsSync(p)) || candidatePublic[0];
 
 security(app);
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.set("views", viewsDir);
+app.use((req, _res, next) => {
+  const fnPrefix = "/.netlify/functions/server";
+  if (req.url === fnPrefix) {
+    req.url = "/";
+  } else if (req.url.startsWith(`${fnPrefix}/`)) {
+    req.url = req.url.slice(fnPrefix.length);
+  }
+  next();
+});
+app.use(express.static(publicDir));
 
 app.use(rateLimit({ windowMs: 10 * 60 * 1000, max: 60 }));
 app.use(angleRoutes);
