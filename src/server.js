@@ -11,6 +11,16 @@ app.use(compression());
 app.use(express.json({ limit: '128kb' }));
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, _res, next) => {
+  const fnPrefix = "/.netlify/functions/server";
+  if (req.url === fnPrefix) {
+    req.url = "/";
+  } else if (req.url.startsWith(`${fnPrefix}/`)) {
+    req.url = req.url.slice(fnPrefix.length);
+  }
+  next();
+});
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
