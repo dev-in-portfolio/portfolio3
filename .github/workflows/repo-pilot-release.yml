@@ -157,6 +157,5 @@ jobs:
           name: RepoPilot ${{ github.ref_name }}
           generate_release_notes: true
           files: |
-            release-assets/RepoPilot-macOS.tar.gz/RepoPilot-macOS.tar.gz
-            release-assets/RepoPilot-Windows-x64.zip/RepoPilot-Windows-x64.zip
-            release-assets/RepoPilot-Linux-x64.tar.gz/RepoPilot-Linux-x64.tar.gz
+            release-assets/*.zip
+            release-assets/*.tar.gz
