@@ -1,7 +1,8 @@
 [build]
-  command = ""
+  command = "echo 'Static landing deploy'"
   publish = "public"
 
-[build.environment]
-  NODE_VERSION = "20"
-  FRAMEWORK = "django"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
