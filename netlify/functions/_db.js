@@ -1,7 +1,7 @@
 const { Client } = require("pg");
 
 async function withClient(fn){
-  const url = process.env.DATABASE_URL;
+  const url = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.NETLIFY_DATABASE_URL_UNPOOLED;
   if(!url){
     return { statusCode: 503, body: JSON.stringify({ error: "DATABASE_URL not set" }) };
   }
