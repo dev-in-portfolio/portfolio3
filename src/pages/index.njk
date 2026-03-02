@@ -3,6 +3,16 @@ layout: layouts/base.njk
 title: "Command Center"
 permalink: "/index.html"
 ---
+<section class="hero">
+  <h2>Routing Target Directory</h2>
+  <p>Catalog of launch targets, tagged by capability and grouped by kind.</p>
+  <div class="meta-row">
+    <span class="badge">{{ targets | length }} targets</span>
+    <span class="badge">{{ collections.tagList | length }} tags</span>
+    <span class="badge">{{ collections.kindList | length }} kinds</span>
+  </div>
+</section>
+
 <div class="search-box">
   <input id="search-input" type="text" placeholder="Search targets" />
 </div>
