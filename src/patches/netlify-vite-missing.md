@@ -4,6 +4,7 @@ title: "Netlify: vite not found (exit 127)"
 tags: ["netlify", "build", "vite", "deps"]
 applies_to: ["node", "netlify"]
 risk: "low"
+permalink: false
 ---
 
 ## Symptom

@@ -4,6 +4,7 @@ title: "Vite SSR: pg Pool CommonJS import"
 tags: ["vite", "pg", "ssr"]
 applies_to: ["node", "postgres"]
 risk: "medium"
+permalink: false
 ---
 
 ## Symptom

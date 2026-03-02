@@ -4,6 +4,7 @@ title: "Next.js: missing server chunk"
 tags: ["nextjs", "build"]
 applies_to: ["node", "nextjs"]
 risk: "high"
+permalink: false
 ---
 
 ## Symptom
