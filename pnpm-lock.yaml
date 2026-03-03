@@ -23,6 +23,9 @@ importers:
       serverless-http:
         specifier: ^4.0.0
         version: 4.0.0
+      vary:
+        specifier: ^1.1.2
+        version: 1.1.2
 
 packages:
 
