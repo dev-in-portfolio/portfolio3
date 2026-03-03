@@ -8806,6 +8806,88 @@ const ROLES = [
   }
 ];
 
+const REACT_RECEIPTS = [
+  { label: "Codex of Imaginary Physics", note: "react deploy", href: "https://dev-in-portfolio-codex-imagin-physics.netlify.app" },
+  { label: "Myths & Facts Almanac", note: "react deploy", href: "https://dev-in-portfolio-myths-facts-almanac.netlify.app" },
+  { label: "Time-Locked Page Forge", note: "react deploy", href: "https://dev-in-portfolio-time-lock-page.netlify.app" },
+  { label: "Motion Workshop Bench", note: "react deploy", href: "https://dev-in-portfolio-motion-workshop.netlify.app" },
+  { label: "Friction Painter", note: "react deploy", href: "https://dev-in-portfolio-friction-painter.netlify.app" },
+  { label: "Ink That Remembers", note: "react deploy", href: "https://dev-in-portfolio-ink-that-remembers.netlify.app" },
+  { label: "Glow Garden", note: "react deploy", href: "https://dev-in-portfolio-glow-garden.netlify.app" },
+  { label: "Field Notes: Alternate Earths", note: "react deploy", href: "https://dev-in-portfolio-field-notes-altearth.netlify.app" },
+  { label: "The Long Walk", note: "react deploy", href: "https://dev-in-portfolio-the-long-walk.netlify.app" },
+  { label: "Constraint Chess", note: "react deploy", href: "https://dev-in-portfolio-constraint-chess.netlify.app" },
+  { label: "Riddle Rooms", note: "react deploy", href: "https://dev-in-portfolio-riddle-room.netlify.app" },
+  { label: "Reflex Trainer", note: "react deploy", href: "https://dev-in-portfolio-reflex-trainer.netlify.app" }
+];
+
+const REACT_BY_LABEL = new Map(REACT_RECEIPTS.map((item)=>[item.label, item]));
+
+const REACT_BY_CATEGORY = {
+  product: ["Time-Locked Page Forge", "Myths & Facts Almanac"],
+  decision: ["Constraint Chess", "Riddle Rooms"],
+  agents: ["Time-Locked Page Forge", "Motion Workshop Bench"],
+  arch: ["Codex of Imaginary Physics", "Glow Garden"],
+  eval: ["Constraint Chess", "Reflex Trainer"],
+  ops: ["Time-Locked Page Forge", "Reflex Trainer"],
+  ux: ["Motion Workshop Bench", "The Long Walk"],
+  creative: ["Friction Painter", "Ink That Remembers", "Glow Garden", "Field Notes: Alternate Earths"]
+};
+
+const REACT_BY_LENS = {
+  pm: ["Time-Locked Page Forge", "The Long Walk", "Field Notes: Alternate Earths"],
+  eval: ["Constraint Chess", "Riddle Rooms", "Reflex Trainer"],
+  ops: ["Time-Locked Page Forge", "Reflex Trainer", "Motion Workshop Bench"]
+};
+
+function normalizeInternalHref(href){
+  if(typeof href !== "string") return href;
+  if(href.startsWith("/apps/") && !href.startsWith("/apps/apps/")){
+    return href.replace("/apps/", "/apps/apps/");
+  }
+  return href;
+}
+
+function pickReactReceipts(role, lensKey){
+  const catLabels = REACT_BY_CATEGORY[role.category] || [];
+  const lensLabels = REACT_BY_LENS[lensKey] || [];
+  const orderedLabels = [...new Set([
+    ...lensLabels.filter((label)=>catLabels.includes(label)),
+    ...catLabels,
+    ...lensLabels
+  ])];
+  return orderedLabels
+    .map((label)=>REACT_BY_LABEL.get(label))
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((receipt)=>({ ...receipt }));
+}
+
+function normalizeAndEnrichRoles(){
+  ROLES.forEach((role)=>{
+    Object.entries(role.lenses || {}).forEach(([lensKey, lensValue])=>{
+      const lens = lensValue || {};
+      const proofStack = lens.proofStack || (lens.proofStack = {});
+      const existing = (proofStack.receipts || []).map((receipt)=>({
+        ...receipt,
+        href: normalizeInternalHref(receipt.href)
+      }));
+      const reactReceipts = pickReactReceipts(role, lensKey);
+      const seen = new Set();
+      const merged = [];
+      [...existing, ...reactReceipts].forEach((receipt)=>{
+        const key = receipt.href || receipt.label;
+        if(seen.has(key)) return;
+        seen.add(key);
+        merged.push(receipt);
+      });
+      proofStack.receipts = merged;
+    });
+  });
+}
+
+normalizeAndEnrichRoles();
+
 const state = { cat:"all", q:"", compact:false, autoScore:true, scoreboardLens:"pm" };
     const $ = (s)=>document.querySelector(s);
     const el = (tag, props={})=>Object.assign(document.createElement(tag), props);
@@ -8835,7 +8917,13 @@ const state = { cat:"all", q:"", compact:false, autoScore:true, scoreboardLens:"
       if(!q) return true;
 
       const lensText = Object.values(role.lenses)
-        .map(l => [l.summary, ...(l.bullets||[]), ...(l.proofStack?.caseNotes||[]), ...(l.proofStack?.signals||[])].join(" "))
+        .map((l) => [
+          l.summary,
+          ...(l.bullets || []),
+          ...(l.proofStack?.caseNotes || []),
+          ...(l.proofStack?.signals || []),
+          ...(l.proofStack?.receipts || []).map((r)=>`${r.label || ""} ${r.note || ""} ${r.href || ""}`)
+        ].join(" "))
         .join(" ");
 
       const hay = [
@@ -8924,6 +9012,10 @@ const state = { cat:"all", q:"", compact:false, autoScore:true, scoreboardLens:"
       const links = $("#dProofLinks"); links.innerHTML="";
       (ps?.receipts || []).forEach(p=>{
         const a = el("a",{ className:"proofLink", href:p.href || "#" });
+        if((p.href || "").startsWith("http")){
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        }
         a.innerHTML = `${escapeHtml(p.label)} <span>${escapeHtml(p.note || "")}</span>`;
         a.onclick = (e)=>{ e.stopPropagation(); };
         links.appendChild(a);
@@ -8996,6 +9088,10 @@ const state = { cat:"all", q:"", compact:false, autoScore:true, scoreboardLens:"
         const links = el("div",{ className:"proofLinks" });
         (L.proofStack?.receipts||[]).forEach(p=>{
           const a = el("a",{ className:"proofLink", href:p.href||"#" });
+          if((p.href || "").startsWith("http")){
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+          }
           a.innerHTML = `${highlight(p.label, state.q)} <span>${highlight(p.note||"", state.q)}</span>`;
           a.onclick=(e)=>{ e.stopPropagation(); };
           links.appendChild(a);
