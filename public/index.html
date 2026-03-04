@@ -3,153 +3,80 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Hono Gatekeeper | Portfolio Preview</title>
+    <title>Gatekeeper</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
-      :root {
-        --bg: #0b0f19;
-        --bg-2: #101a2c;
-        --surface: rgba(14, 22, 39, 0.72);
-        --surface-2: rgba(25, 34, 56, 0.8);
-        --fg: #e8eefc;
-        --muted: #9eb0d2;
-        --accent: #4fd1ff;
-        --accent-2: #8e9dff;
-        --outline: rgba(125, 152, 206, 0.26);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-        color: var(--fg);
-        background:
-          radial-gradient(circle at 18% 10%, rgba(79, 209, 255, 0.18), transparent 36%),
-          radial-gradient(circle at 82% 0%, rgba(142, 157, 255, 0.18), transparent 42%),
-          linear-gradient(180deg, var(--bg), var(--bg-2));
-      }
-      .wrap {
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 64px 24px 84px;
-      }
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 12px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--accent);
-        background: rgba(79, 209, 255, 0.1);
-        border: 1px solid rgba(79, 209, 255, 0.3);
-      }
-      h1 {
-        margin: 18px 0 10px;
-        font-size: clamp(2rem, 3.6vw, 3.1rem);
-        line-height: 1.1;
-      }
-      .lead {
-        max-width: 760px;
-        margin: 0;
-        color: var(--muted);
-        font-size: clamp(1rem, 2.1vw, 1.15rem);
-        line-height: 1.65;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-        margin-top: 34px;
-      }
-      .card {
-        border-radius: 16px;
-        border: 1px solid var(--outline);
-        background: var(--surface);
-        padding: 16px;
-      }
-      .card h3 {
-        margin: 0 0 7px;
-        font-size: 0.95rem;
-        color: #cdd8f2;
-      }
-      .mono {
-        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.82rem;
-        color: #dbe7ff;
-        word-break: break-word;
-      }
-      .actions {
-        margin-top: 26px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 11px 15px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        border: 1px solid transparent;
-        transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
-      }
-      .btn.primary {
-        color: #001729;
-        background: linear-gradient(90deg, #69dcff, #8ea7ff);
-      }
-      .btn.secondary {
-        color: #d7e5ff;
-        background: var(--surface-2);
-        border-color: var(--outline);
-      }
-      .btn:hover {
-        transform: translateY(-1px);
-      }
-      .foot {
-        margin-top: 30px;
-        color: #93a8cf;
-        font-size: 0.9rem;
-      }
+      :root{--bg:#0c1022;--card:#151c36;--bd:#304676;--txt:#eef3ff;--muted:#a6b6db;--a:#79f6ce;--b:#7fa0ff}*{box-sizing:border-box}
+      body{margin:0;background:radial-gradient(circle at 15% 0,#1f4360 0,#0c1022 56%);color:var(--txt);font-family:Inter,system-ui,sans-serif}
+      .wrap{max-width:1080px;margin:0 auto;padding:24px}.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+      .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}input,textarea,select,button{width:100%;background:#12193a;color:var(--txt);border:1px solid #3c5f9a;border-radius:10px;padding:10px}
+      button{background:linear-gradient(90deg,var(--a),var(--b));color:#061828;border:none;font-weight:700;cursor:pointer}.muted{color:var(--muted);font-size:.9rem}.item{border:1px solid #304978;border-radius:10px;background:#111735;padding:10px;margin-top:8px}
+      @media(max-width:960px){.row{grid-template-columns:1fr}}
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>Hono Gatekeeper</h1>
-      <p class="lead">
-        Hono Gatekeeper is a runtime-backed application (Hono + Node + Postgres) and cannot execute directly on Netlify static hosting.
-        This page keeps the project published and provides direct access to the source and a downloadable package.
-      </p>
-
-      <section class="grid" aria-label="Project metadata">
+      <section class="card"><h1>Gatekeeper</h1><p class="muted">Manage API keys and evaluate request allow/block outcomes.</p><p id="status" class="muted">Checking API...</p></section>
+      <section class="row">
         <article class="card">
-          <h3>Branch</h3>
-          <div class="mono">hono-gatekeeper</div>
+          <h2>Keys</h2>
+          <input id="label" placeholder="key label" />
+          <input id="token" placeholder="raw token" />
+          <button id="createKey">Create Key</button>
+          <button id="loadKeys">Refresh Keys</button>
+          <div id="keys" class="muted"></div>
         </article>
         <article class="card">
-          <h3>Runtime</h3>
-          <div class="mono">Hono + Node + Postgres</div>
-        </article>
-        <article class="card">
-          <h3>Netlify Status</h3>
-          <div class="mono">Landing page active (static)</div>
+          <h2>Simulate Request</h2>
+          <input id="route" value="/v1/orders" />
+          <select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+          <input id="apiKey" placeholder="api key token" />
+          <textarea id="payload" rows="6" placeholder='JSON payload (optional)'></textarea>
+          <button id="simulate">Simulate</button>
+          <button id="logs">Load Logs</button>
+          <div id="out" class="muted"></div>
         </article>
       </section>
-
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/hono-gatekeeper.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/hono-gatekeeper">View Branch Source</a>
-      </div>
-
-      <p class="foot">
-        To run the full API service: provision Postgres + secrets, then run via Node on a compatible backend host.
-      </p>
     </main>
+    <script>
+      const device = localStorage.gatekeeperKey || (localStorage.gatekeeperKey = `gatekeeper-${crypto.randomUUID()}`);
+      const headers = {'Content-Type':'application/json','X-Device-Key':device};
+      const status = document.getElementById('status');
+      const out = document.getElementById('out');
+      const keysBox = document.getElementById('keys');
+      const esc=(s)=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+      const val=(id)=>document.getElementById(id).value.trim();
+      const parsePayload=()=>{ const raw=document.getElementById('payload').value.trim(); if(!raw) return {}; try{return JSON.parse(raw);}catch{return {raw};} };
+      const show=(el,data)=>{ el.innerHTML=`<pre>${esc(JSON.stringify(data,null,2))}</pre>`; };
+
+      async function health(){ const r=await fetch('/api/health/db'); const d=await r.json(); status.textContent=d.ok?'API connected to database.':`API warning: ${d.error||'unavailable'}`; }
+
+      async function loadKeys(){
+        const r=await fetch('/api/admin/keys',{headers});
+        const d=await r.json().catch(()=>({}));
+        if(!r.ok){ show(keysBox,d); return; }
+        keysBox.innerHTML=(d.keys||[]).map(k=>`<div class='item'><strong>${esc(k.label)}</strong><div class='muted'>${k.id}</div><button data-id='${k.id}'>Delete</button></div>`).join('')||'<div class="muted">No keys yet.</div>';
+        keysBox.querySelectorAll('button[data-id]').forEach(btn=>btn.onclick=async()=>{ await fetch(`/api/admin/keys/${btn.dataset.id}`,{method:'DELETE',headers}); loadKeys(); });
+      }
+
+      document.getElementById('createKey').onclick = async ()=>{
+        const body={label:val('label'),token:val('token')};
+        const r=await fetch('/api/admin/keys',{method:'POST',headers,body:JSON.stringify(body)});
+        show(out, await r.json().catch(()=>({error:'bad_response'})));
+        loadKeys();
+      };
+      document.getElementById('loadKeys').onclick=loadKeys;
+      document.getElementById('simulate').onclick=async()=>{
+        const body={route:val('route'),method:val('method'),apiKey:val('apiKey'),payload:parsePayload()};
+        const r=await fetch('/api/proxy/simulate',{method:'POST',headers,body:JSON.stringify(body)});
+        show(out, await r.json().catch(()=>({error:'bad_response'})));
+      };
+      document.getElementById('logs').onclick=async()=>{
+        const r=await fetch('/api/proxy/logs',{headers});
+        show(out, await r.json().catch(()=>({error:'bad_response'})));
+      };
+
+      health().catch(()=>status.textContent='API unavailable.');
+      loadKeys();
+    </script>
   </body>
 </html>
