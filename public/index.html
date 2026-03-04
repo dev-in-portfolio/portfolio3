@@ -3,32 +3,183 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Remix DiffAtlas | Portfolio Preview</title>
+    <title>Remix DiffAtlas</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
-      :root { --bg:#0b0f19; --bg-2:#101a2c; --surface:rgba(14,22,39,.72); --surface-2:rgba(25,34,56,.8); --fg:#e8eefc; --muted:#9eb0d2; --accent:#4fd1ff; --accent-2:#8e9dff; --outline:rgba(125,152,206,.26);} *{box-sizing:border-box}
-      body{margin:0;min-height:100vh;font-family:"Space Grotesk",system-ui,sans-serif;color:var(--fg);background:radial-gradient(circle at 18% 10%,rgba(79,209,255,.18),transparent 36%),radial-gradient(circle at 82% 0%,rgba(142,157,255,.18),transparent 42%),linear-gradient(180deg,var(--bg),var(--bg-2));}
-      .wrap{max-width:980px;margin:0 auto;padding:64px 24px 84px}.badge{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:rgba(79,209,255,.1);border:1px solid rgba(79,209,255,.3)}
-      h1{margin:18px 0 10px;font-size:clamp(2rem,3.6vw,3.1rem);line-height:1.1}.lead{max-width:760px;margin:0;color:var(--muted);font-size:clamp(1rem,2.1vw,1.15rem);line-height:1.65}
-      .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:34px}.card{border-radius:16px;border:1px solid var(--outline);background:var(--surface);padding:16px}.card h3{margin:0 0 7px;font-size:.95rem;color:#cdd8f2}.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:#dbe7ff;word-break:break-word}
-      .actions{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 15px;border-radius:12px;text-decoration:none;font-size:.9rem;border:1px solid transparent;transition:transform 120ms ease}.btn.primary{color:#001729;background:linear-gradient(90deg,#69dcff,#8ea7ff)}.btn.secondary{color:#d7e5ff;background:var(--surface-2);border-color:var(--outline)}.btn:hover{transform:translateY(-1px)}.foot{margin-top:30px;color:#93a8cf;font-size:.9rem}
+      :root { --bg:#0a1222; --panel:#172440; --panel2:#1f2f50; --text:#ebf2ff; --muted:#a1b6de; --line:rgba(150,176,226,.28); }
+      * { box-sizing:border-box; }
+      body { margin:0; font-family:"Space Grotesk",system-ui,sans-serif; color:var(--text); background:linear-gradient(180deg,#0a1222,#0f1c38); }
+      .wrap { max-width:1120px; margin:0 auto; padding:28px 16px 58px; }
+      .hero,.card { border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:14px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+      .card { background:var(--panel2); }
+      label { display:block; margin:8px 0 4px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+      input,textarea,select,button { width:100%; border-radius:10px; border:1px solid var(--line); background:#0d1931; color:var(--text); padding:8px 10px; font:inherit; }
+      textarea { min-height:120px; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+      .row { display:flex; gap:8px; }
+      .row > * { flex:1; }
+      button { border:0; background:linear-gradient(90deg,#70dcff,#90abff); color:#03152b; font-weight:700; cursor:pointer; }
+      button.secondary { border:1px solid var(--line); background:#172744; color:#dbe9ff; }
+      .list { display:grid; gap:8px; margin-top:8px; max-height:420px; overflow:auto; }
+      .item { border:1px solid var(--line); border-radius:10px; background:#0d1830; padding:10px; }
+      .muted { color:var(--muted); }
+      #msg { min-height:20px; }
+      @media (max-width: 900px) { .grid { grid-template-columns:1fr; } .row { flex-direction:column; } }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>Remix DiffAtlas</h1>
-      <p class="lead">Remix DiffAtlas is a runtime-backed application (Remix + Node + Postgres) and cannot execute directly on Netlify static hosting. This page keeps the project published and provides direct access to the source and a downloadable package.</p>
-      <section class="grid" aria-label="Project metadata">
-        <article class="card"><h3>Branch</h3><div class="mono">remix-diffatlas</div></article>
-        <article class="card"><h3>Runtime</h3><div class="mono">Remix + Node + Postgres</div></article>
-        <article class="card"><h3>Netlify Status</h3><div class="mono">Landing page active (static)</div></article>
+      <section class="hero">
+        <h1 style="margin:0 0 8px">Remix DiffAtlas</h1>
+        <p class="muted" style="margin:0">Create dataset snapshots and compute added/removed/modified deltas.</p>
       </section>
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/remix-diffatlas.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/remix-diffatlas">View Branch Source</a>
-      </div>
-      <p class="foot">To run the full app, use the local runtime documented in the branch README.</p>
+      <section class="grid">
+        <article class="card">
+          <h3 style="margin:0">Job + Snapshot</h3>
+          <label>Job name</label>
+          <input id="jobName" placeholder="Catalog compare" />
+          <label>Key field</label>
+          <input id="keyField" value="id" />
+          <div class="row" style="margin-top:8px">
+            <button id="createJob">Create Job</button>
+            <button id="reloadJobs" class="secondary">Reload</button>
+          </div>
+          <label>Active job</label>
+          <select id="jobSelect"></select>
+          <label>Snapshot label</label>
+          <input id="snapshotLabel" placeholder="baseline-2026-03-04" />
+          <label>Records JSON Array</label>
+          <textarea id="records">[{"id":"a","name":"alpha","score":1},{"id":"b","name":"beta","score":2}]</textarea>
+          <button id="createSnapshot" style="margin-top:8px">Create Snapshot</button>
+          <p id="msg" class="muted"></p>
+        </article>
+        <article class="card">
+          <h3 style="margin:0">Compare</h3>
+          <label>Base snapshot</label>
+          <select id="baseSnap"></select>
+          <label>Compare snapshot</label>
+          <select id="cmpSnap"></select>
+          <button id="runCompare" style="margin-top:8px">Run Compare</button>
+          <div id="snapshots" class="list"></div>
+          <h3 style="margin:10px 0 0">Results</h3>
+          <div id="results" class="list"></div>
+        </article>
+      </section>
     </main>
+    <script>
+      let currentJob = '';
+      const msg = (t, bad = false) => {
+        const el = document.getElementById('msg');
+        el.textContent = t;
+        el.style.color = bad ? '#ffb7b7' : '#a1b6de';
+      };
+      async function api(path, opts = {}) {
+        const res = await fetch(path, {
+          ...opts,
+          headers: { 'content-type': 'application/json', ...(opts.headers || {}) }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || data.error || `http_${res.status}`);
+        return data;
+      }
+      async function loadJobs() {
+        const data = await api('/api/jobs');
+        const sel = document.getElementById('jobSelect');
+        sel.innerHTML = '';
+        for (const job of data.items || []) {
+          const opt = document.createElement('option');
+          opt.value = job.id;
+          opt.textContent = `${job.name} (${job.key_field})`;
+          sel.appendChild(opt);
+        }
+        if (!currentJob && sel.value) currentJob = sel.value;
+        if (currentJob) sel.value = currentJob;
+        if (sel.value) {
+          currentJob = sel.value;
+          await loadSnapshots();
+          await loadResults();
+        }
+      }
+      async function loadSnapshots() {
+        if (!currentJob) return;
+        const data = await api(`/api/jobs/${currentJob}/snapshots`);
+        const root = document.getElementById('snapshots');
+        root.innerHTML = '';
+        const base = document.getElementById('baseSnap');
+        const cmp = document.getElementById('cmpSnap');
+        base.innerHTML = '';
+        cmp.innerHTML = '';
+        for (const item of data.items || []) {
+          const card = document.createElement('div');
+          card.className = 'item';
+          card.innerHTML = `<strong>${item.label}</strong><div class="muted">${item.record_count} records</div>`;
+          root.appendChild(card);
+          const a = document.createElement('option');
+          const b = document.createElement('option');
+          a.value = b.value = item.id;
+          a.textContent = b.textContent = item.label;
+          base.appendChild(a);
+          cmp.appendChild(b);
+        }
+      }
+      async function loadResults() {
+        if (!currentJob) return;
+        const data = await api(`/api/jobs/${currentJob}/results`);
+        const root = document.getElementById('results');
+        root.innerHTML = '';
+        for (const r of data.items || []) {
+          const card = document.createElement('div');
+          card.className = 'item';
+          card.innerHTML = `<strong>${new Date(r.created_at).toLocaleString()}</strong><div class="muted">added ${r.added_count} • removed ${r.removed_count} • modified ${r.modified_count}</div>`;
+          root.appendChild(card);
+        }
+      }
+      document.getElementById('createJob').onclick = async () => {
+        try {
+          const created = await api('/api/jobs', {
+            method: 'POST',
+            body: JSON.stringify({
+              name: document.getElementById('jobName').value.trim(),
+              keyField: document.getElementById('keyField').value.trim() || 'id'
+            })
+          });
+          currentJob = created.id;
+          msg('Job created.');
+          await loadJobs();
+        } catch (e) { msg(e.message, true); }
+      };
+      document.getElementById('jobSelect').onchange = async (e) => {
+        currentJob = e.target.value;
+        await loadSnapshots();
+        await loadResults();
+      };
+      document.getElementById('createSnapshot').onclick = async () => {
+        try {
+          if (!currentJob) throw new Error('create/select a job first');
+          const records = JSON.parse(document.getElementById('records').value);
+          await api(`/api/jobs/${currentJob}/snapshots`, {
+            method: 'POST',
+            body: JSON.stringify({ label: document.getElementById('snapshotLabel').value.trim(), records })
+          });
+          msg('Snapshot created.');
+          await loadSnapshots();
+        } catch (e) { msg(e.message, true); }
+      };
+      document.getElementById('runCompare').onclick = async () => {
+        try {
+          if (!currentJob) throw new Error('select a job first');
+          const out = await api(`/api/jobs/${currentJob}/compare`, {
+            method: 'POST',
+            body: JSON.stringify({
+              baseSnapshot: document.getElementById('baseSnap').value,
+              compareSnapshot: document.getElementById('cmpSnap').value
+            })
+          });
+          msg(`Compare done: +${out.summary.added} / -${out.summary.removed} / Δ${out.summary.modified}`);
+          await loadResults();
+        } catch (e) { msg(e.message, true); }
+      };
+      document.getElementById('reloadJobs').onclick = loadJobs;
+      loadJobs().catch((e) => msg(e.message, true));
+    </script>
   </body>
 </html>
