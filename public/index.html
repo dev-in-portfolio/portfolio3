@@ -3,73 +3,222 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Signal Kitchen | Portfolio Preview</title>
+    <title>Signal Kitchen</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
       :root {
-        --bg: #0b0f19;
-        --bg-2: #101a2c;
-        --surface: rgba(14, 22, 39, 0.72);
-        --surface-2: rgba(25, 34, 56, 0.8);
-        --fg: #e8eefc;
-        --muted: #9eb0d2;
-        --accent: #4fd1ff;
-        --accent-2: #8e9dff;
-        --outline: rgba(125, 152, 206, 0.26);
+        --bg: #08101d;
+        --panel: #101a2e;
+        --panel2: #17233b;
+        --text: #e6eefc;
+        --muted: #9bb0d7;
+        --accent: #68e6ff;
+        --line: rgba(137, 167, 222, 0.26);
       }
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        min-height: 100vh;
         font-family: "Space Grotesk", system-ui, sans-serif;
-        color: var(--fg);
+        color: var(--text);
         background:
-          radial-gradient(circle at 18% 10%, rgba(79, 209, 255, 0.18), transparent 36%),
-          radial-gradient(circle at 82% 0%, rgba(142, 157, 255, 0.18), transparent 42%),
-          linear-gradient(180deg, var(--bg), var(--bg-2));
+          radial-gradient(circle at 18% 0%, rgba(104, 230, 255, 0.18), transparent 35%),
+          linear-gradient(180deg, #090f1d, #0a1222 70%);
       }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 64px 24px 84px; }
-      .badge {
-        display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px;
-        border-radius: 999px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--accent); background: rgba(79, 209, 255, 0.1); border: 1px solid rgba(79, 209, 255, 0.3);
-      }
-      h1 { margin: 18px 0 10px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.1; }
-      .lead { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.1vw, 1.15rem); line-height: 1.65; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 34px; }
-      .card { border-radius: 16px; border: 1px solid var(--outline); background: var(--surface); padding: 16px; }
-      .card h3 { margin: 0 0 7px; font-size: 0.95rem; color: #cdd8f2; }
-      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; color: #dbe7ff; word-break: break-word; }
-      .actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn {
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 11px 15px; border-radius: 12px; text-decoration: none; font-size: 0.9rem;
-        border: 1px solid transparent; transition: transform 120ms ease;
-      }
-      .btn.primary { color: #001729; background: linear-gradient(90deg, #69dcff, #8ea7ff); }
-      .btn.secondary { color: #d7e5ff; background: var(--surface-2); border-color: var(--outline); }
-      .btn:hover { transform: translateY(-1px); }
-      .foot { margin-top: 30px; color: #93a8cf; font-size: 0.9rem; }
+      .wrap { max-width: 1000px; margin: 0 auto; padding: 30px 18px 72px; }
+      .hero { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 18px; margin-bottom: 16px; }
+      .hero h1 { margin: 0 0 8px; }
+      .muted { color: var(--muted); }
+      .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+      .card { border: 1px solid var(--line); border-radius: 14px; background: var(--panel2); padding: 14px; }
+      label { display: block; font-size: 12px; color: var(--muted); margin: 8px 0 6px; text-transform: uppercase; letter-spacing: .06em; }
+      input, select, button { width: 100%; min-height: 38px; border-radius: 10px; border: 1px solid var(--line); background: #0c1528; color: var(--text); padding: 8px 10px; }
+      button { cursor: pointer; font-weight: 600; background: linear-gradient(90deg,#66deff,#87a8ff); color: #03111e; border: 0; }
+      button.secondary { background: #14233d; color: #d9e7ff; border: 1px solid var(--line); }
+      .row { display: flex; gap: 8px; align-items: center; }
+      .row > * { flex: 1; }
+      .list { display: grid; gap: 10px; margin-top: 8px; }
+      .item { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #0d172b; }
+      .item a { color: #9bdcff; }
+      #msg { margin-top: 10px; min-height: 22px; }
+      @media (max-width: 680px) { .row { flex-direction: column; } }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>Signal Kitchen</h1>
-      <p class="lead">
-        Signal Kitchen is a runtime-backed application (Flutter + API Backend) and cannot execute directly on Netlify static hosting.
-        This page keeps the project published and provides direct access to the source and a downloadable package.
-      </p>
-      <section class="grid" aria-label="Project metadata">
-        <article class="card"><h3>Branch</h3><div class="mono">signal-kitchen</div></article>
-        <article class="card"><h3>Runtime</h3><div class="mono">Flutter + API Backend</div></article>
-        <article class="card"><h3>Netlify Status</h3><div class="mono">Landing page active (static)</div></article>
+      <section class="hero">
+        <h1>Signal Kitchen</h1>
+        <p class="muted">Multi-timer board with presets. Data is persisted by device key in Neon.</p>
       </section>
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/signal-kitchen.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/signal-kitchen">View Branch Source</a>
-      </div>
-      <p class="foot">To run the full app, use the local runtime documented in the branch README.</p>
+
+      <section class="grid">
+        <article class="card">
+          <h3>Create Preset</h3>
+          <label>Name</label>
+          <input id="presetName" placeholder="Steak 6m" />
+          <label>Seconds</label>
+          <input id="presetSeconds" type="number" min="1" max="86400" value="360" />
+          <label>Sound Profile</label>
+          <input id="presetSound" value="default" />
+          <label>Haptic Profile</label>
+          <input id="presetHaptic" value="default" />
+          <div class="row" style="margin-top:10px">
+            <button id="createPreset">Save Preset</button>
+            <button class="secondary" id="reloadPresets">Refresh</button>
+          </div>
+          <div id="presets" class="list"></div>
+        </article>
+
+        <article class="card">
+          <h3>Start Timer Run</h3>
+          <label>Label</label>
+          <input id="runLabel" placeholder="Line check" />
+          <label>Preset (optional)</label>
+          <select id="runPreset"><option value="">Custom seconds</option></select>
+          <label>Target Seconds</label>
+          <input id="runSeconds" type="number" min="1" max="86400" value="180" />
+          <div class="row" style="margin-top:10px">
+            <button id="startRun">Start Run</button>
+            <button class="secondary" id="reloadRuns">Refresh</button>
+          </div>
+          <div id="runs" class="list"></div>
+        </article>
+      </section>
+      <p id="msg" class="muted"></p>
     </main>
+
+    <script>
+      const keyName = "signal_kitchen_device_key";
+      let deviceKey = localStorage.getItem(keyName);
+      if (!deviceKey && window.crypto?.randomUUID) {
+        deviceKey = crypto.randomUUID();
+        localStorage.setItem(keyName, deviceKey);
+      }
+      if (!deviceKey) {
+        deviceKey = "fallback-device-key";
+        localStorage.setItem(keyName, deviceKey);
+      }
+
+      const msg = (text, bad = false) => {
+        const el = document.getElementById("msg");
+        el.textContent = text;
+        el.style.color = bad ? "#ffb7b7" : "#9bb0d7";
+      };
+
+      async function api(path, opts = {}) {
+        const res = await fetch(`/api/sk${path}`, {
+          ...opts,
+          headers: {
+            "content-type": "application/json",
+            "X-Device-Key": deviceKey,
+            ...(opts.headers || {})
+          }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `http_${res.status}`);
+        return data;
+      }
+
+      async function loadPresets() {
+        try {
+          const data = await api("/presets");
+          const presets = data.presets || [];
+          const root = document.getElementById("presets");
+          const picker = document.getElementById("runPreset");
+          root.innerHTML = "";
+          picker.innerHTML = '<option value="">Custom seconds</option>';
+          for (const p of presets) {
+            const row = document.createElement("div");
+            row.className = "item";
+            row.innerHTML = `<strong>${p.name}</strong><div class="muted">${p.seconds}s • ${p.sound_profile}/${p.haptic_profile}</div>`;
+            const btn = document.createElement("button");
+            btn.className = "secondary";
+            btn.style.marginTop = "8px";
+            btn.textContent = "Delete";
+            btn.onclick = async () => {
+              try {
+                await api(`/presets/${p.id}`, { method: "DELETE" });
+                await loadPresets();
+              } catch (e) { msg(e.message, true); }
+            };
+            row.appendChild(btn);
+            root.appendChild(row);
+
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = `${p.name} (${p.seconds}s)`;
+            picker.appendChild(opt);
+          }
+        } catch (e) { msg(e.message, true); }
+      }
+
+      async function loadRuns() {
+        try {
+          const data = await api("/runs?limit=25");
+          const runs = data.runs || [];
+          const root = document.getElementById("runs");
+          root.innerHTML = "";
+          for (const r of runs) {
+            const row = document.createElement("div");
+            row.className = "item";
+            row.innerHTML = `<strong>${r.label || "Untitled run"}</strong><div class="muted">${r.target_seconds}s • ${r.status}</div>`;
+            if (r.status === "running") {
+              const done = document.createElement("button");
+              done.className = "secondary";
+              done.style.marginTop = "8px";
+              done.textContent = "Stop as Done";
+              done.onclick = async () => {
+                try {
+                  await api(`/runs/${r.id}/stop`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ status: "done" })
+                  });
+                  await loadRuns();
+                } catch (e) { msg(e.message, true); }
+              };
+              row.appendChild(done);
+            }
+            root.appendChild(row);
+          }
+        } catch (e) { msg(e.message, true); }
+      }
+
+      document.getElementById("createPreset").onclick = async () => {
+        try {
+          await api("/presets", {
+            method: "POST",
+            body: JSON.stringify({
+              name: document.getElementById("presetName").value.trim(),
+              seconds: Number(document.getElementById("presetSeconds").value),
+              soundProfile: document.getElementById("presetSound").value.trim(),
+              hapticProfile: document.getElementById("presetHaptic").value.trim()
+            })
+          });
+          document.getElementById("presetName").value = "";
+          await loadPresets();
+          msg("Preset saved.");
+        } catch (e) { msg(e.message, true); }
+      };
+
+      document.getElementById("startRun").onclick = async () => {
+        try {
+          await api("/runs", {
+            method: "POST",
+            body: JSON.stringify({
+              label: document.getElementById("runLabel").value.trim(),
+              presetId: document.getElementById("runPreset").value || null,
+              targetSeconds: Number(document.getElementById("runSeconds").value)
+            })
+          });
+          document.getElementById("runLabel").value = "";
+          await loadRuns();
+          msg("Run started.");
+        } catch (e) { msg(e.message, true); }
+      };
+
+      document.getElementById("reloadPresets").onclick = loadPresets;
+      document.getElementById("reloadRuns").onclick = loadRuns;
+
+      loadPresets();
+      loadRuns();
+    </script>
   </body>
 </html>

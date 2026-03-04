@@ -1,7 +1,14 @@
 [build]
-  command = ""
+  command = "pnpm install --frozen-lockfile"
   publish = "public"
 
 [build.environment]
   NODE_VERSION = "20"
-  FRAMEWORK = "flutter"
+
+[functions]
+  directory = "functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/:splat"
+  status = 200
