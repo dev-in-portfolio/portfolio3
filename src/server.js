@@ -18,6 +18,8 @@ const pool = DATABASE_URL
     })
   : null;
 
+let schemaInitPromise = null;
+
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 app.use((req, _res, next) => {
@@ -33,6 +35,58 @@ function requireDb() {
     err.status = 500;
     throw err;
   }
+}
+
+async function ensureSchema() {
+  requireDb();
+  if (!schemaInitPromise) {
+    schemaInitPromise = (async () => {
+      try {
+        await pool.query('create extension if not exists pgcrypto');
+      } catch (_e) {}
+      try {
+        await pool.query('create extension if not exists pg_trgm');
+      } catch (_e) {}
+      await pool.query(`
+        create table if not exists rg_users (
+          id uuid primary key default gen_random_uuid(),
+          device_key text not null unique,
+          created_at timestamptz not null default now()
+        )
+      `);
+      await pool.query(`
+        create table if not exists rg_chunks (
+          id uuid primary key default gen_random_uuid(),
+          user_id uuid not null references rg_users(id) on delete cascade,
+          title text not null,
+          source text not null default '',
+          tags text[] not null default '{}',
+          body text not null,
+          created_at timestamptz not null default now()
+        )
+      `);
+      await pool.query(`
+        alter table rg_chunks
+        add column if not exists body_tsv tsvector
+        generated always as (to_tsvector('english', coalesce(title,'') || ' ' || coalesce(body,''))) stored
+      `);
+      await pool.query('create index if not exists idx_rg_chunks_tsv on rg_chunks using gin(body_tsv)');
+      await pool.query('create index if not exists idx_rg_chunks_tags_gin on rg_chunks using gin(tags)');
+      try {
+        await pool.query('create index if not exists idx_rg_chunks_title_trgm on rg_chunks using gin(title gin_trgm_ops)');
+      } catch (_e) {}
+      await pool.query('create index if not exists idx_rg_chunks_user_time on rg_chunks(user_id, created_at desc)');
+    })().catch((error) => {
+      schemaInitPromise = null;
+      throw error;
+    });
+  }
+  return schemaInitPromise;
+}
+
+async function requireDbReady() {
+  requireDb();
+  await ensureSchema();
 }
 
 function requireDeviceKey(req, res, next) {
@@ -57,7 +111,7 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.get('/api/health/db', async (_req, res) => {
   if (!pool) return res.json({ ok: false, error: 'DATABASE_URL not configured' });
   try {
-    await pool.query('select 1');
+    await ensureSchema();
     res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -66,7 +120,7 @@ app.get('/api/health/db', async (_req, res) => {
 
 app.post('/api/recalgrid/chunks', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     const title = String(req.body.title || '').trim();
     const body = String(req.body.body || '').trim();
@@ -87,7 +141,7 @@ app.post('/api/recalgrid/chunks', requireDeviceKey, async (req, res, next) => {
 
 app.get('/api/recalgrid/tags', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     const { rows } = await pool.query(
       `select distinct unnest(tags) as tag
@@ -101,7 +155,7 @@ app.get('/api/recalgrid/tags', requireDeviceKey, async (req, res, next) => {
 
 app.post('/api/recalgrid/search', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     const query = String(req.body.query || '').trim();
     const tags = normalizeTags(req.body.tags || []);
@@ -138,17 +192,30 @@ app.post('/api/recalgrid/search', requireDeviceKey, async (req, res, next) => {
         tagClause2 = ` and tags @> $${params2.length}`;
       }
       params2.push(limit);
-      const fuzzy = await pool.query(
-        `select id, title, source, tags, body, created_at,
-                similarity(title, $2) as sim
-         from rg_chunks
-         where user_id = $1 and title % $3
-         ${tagClause2}
-         order by sim desc, created_at desc
-         limit $${params2.length}`,
-        params2
-      );
-      return res.json({ results: fuzzy.rows });
+      try {
+        const fuzzy = await pool.query(
+          `select id, title, source, tags, body, created_at,
+                  similarity(title, $2) as sim
+           from rg_chunks
+           where user_id = $1 and title % $3
+           ${tagClause2}
+           order by sim desc, created_at desc
+           limit $${params2.length}`,
+          params2
+        );
+        return res.json({ results: fuzzy.rows });
+      } catch (_e) {
+        const ilike = await pool.query(
+          `select id, title, source, tags, body, created_at
+           from rg_chunks
+           where user_id = $1 and title ilike '%' || $2 || '%'
+           ${tagClause2}
+           order by created_at desc
+           limit $${params2.length}`,
+          params2
+        );
+        return res.json({ results: ilike.rows });
+      }
     }
 
     const params3 = [userId];
@@ -171,7 +238,7 @@ app.post('/api/recalgrid/search', requireDeviceKey, async (req, res, next) => {
 
 app.get('/api/recalgrid/chunks/:id', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     const { rows } = await pool.query(
       'select id, title, source, tags, body, created_at from rg_chunks where id = $1 and user_id = $2',
@@ -184,7 +251,7 @@ app.get('/api/recalgrid/chunks/:id', requireDeviceKey, async (req, res, next) =>
 
 app.delete('/api/recalgrid/chunks/:id', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     await pool.query('delete from rg_chunks where id = $1 and user_id = $2', [req.params.id, userId]);
     res.json({ ok: true });
@@ -193,7 +260,7 @@ app.delete('/api/recalgrid/chunks/:id', requireDeviceKey, async (req, res, next)
 
 app.get('/api/recalgrid/export', requireDeviceKey, async (req, res, next) => {
   try {
-    requireDb();
+    await requireDbReady();
     const userId = await ensureUser(req.deviceKey);
     const format = String(req.query.format || 'json').toLowerCase();
     const { rows } = await pool.query(
