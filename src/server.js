@@ -38,7 +38,7 @@ function requireDb() {
 
 async function getUserId(deviceKey) {
   const { rows } = await pool.query(
-    `insert into users (device_key)
+    `insert into dr_users (device_key)
      values ($1)
      on conflict (device_key) do update set device_key = excluded.device_key
      returning id`,
