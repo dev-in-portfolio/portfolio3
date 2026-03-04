@@ -3,65 +3,104 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dash DriftMeter | Portfolio Preview</title>
+    <title>Dash DriftMeter</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
-      :root {
-        --bg: #0b0f19;
-        --bg-2: #101a2c;
-        --surface: rgba(14, 22, 39, 0.72);
-        --surface-2: rgba(25, 34, 56, 0.8);
-        --fg: #e8eefc;
-        --muted: #9eb0d2;
-        --accent: #4fd1ff;
-        --accent-2: #8e9dff;
-        --outline: rgba(125, 152, 206, 0.26);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-        color: var(--fg);
-        background:
-          radial-gradient(circle at 18% 10%, rgba(79, 209, 255, 0.18), transparent 36%),
-          radial-gradient(circle at 82% 0%, rgba(142, 157, 255, 0.18), transparent 42%),
-          linear-gradient(180deg, var(--bg), var(--bg-2));
-      }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 64px 24px 84px; }
-      .badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: rgba(79, 209, 255, 0.1); border: 1px solid rgba(79, 209, 255, 0.3); }
-      h1 { margin: 18px 0 10px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.1; }
-      .lead { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.1vw, 1.15rem); line-height: 1.65; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 34px; }
-      .card { border-radius: 16px; border: 1px solid var(--outline); background: var(--surface); padding: 16px; }
-      .card h3 { margin: 0 0 7px; font-size: 0.95rem; color: #cdd8f2; }
-      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; color: #dbe7ff; word-break: break-word; }
-      .actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 15px; border-radius: 12px; text-decoration: none; font-size: 0.9rem; border: 1px solid transparent; transition: transform 120ms ease; }
-      .btn.primary { color: #001729; background: linear-gradient(90deg, #69dcff, #8ea7ff); }
-      .btn.secondary { color: #d7e5ff; background: var(--surface-2); border-color: var(--outline); }
-      .btn:hover { transform: translateY(-1px); }
-      .foot { margin-top: 30px; color: #93a8cf; font-size: 0.9rem; }
+      :root { --bg:#0b1222; --card:#121d34; --txt:#edf3ff; --m:#a5b8dd; --a:#7cf0c6; --b:#67b6ff; --bd:#314a7c; }
+      * { box-sizing:border-box; }
+      body { margin:0; font-family: Inter,system-ui,sans-serif; color:var(--txt); background:radial-gradient(circle at 18% 0,#21406e 0,#0b1222 58%); }
+      .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+      .card { border:1px solid var(--bd); border-radius:14px; background:var(--card); padding:14px; }
+      .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+      input,select,textarea,button { width:100%; border:1px solid #3f5f98; border-radius:10px; background:#0e1730; color:var(--txt); padding:10px; }
+      button { background:linear-gradient(90deg,var(--a),var(--b)); color:#081625; font-weight:700; border:none; cursor:pointer; }
+      .m { color:var(--m); font-size:.9rem; }
+      table { width:100%; border-collapse: collapse; }
+      th,td { border-bottom:1px solid #314a7c; text-align:left; padding:6px; }
+      @media(max-width:960px){ .row{grid-template-columns:1fr;} }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>Dash DriftMeter</h1>
-      <p class="lead">
-        Dash DriftMeter is a runtime-backed application (Dash + Python + Postgres) and cannot execute directly on Netlify static hosting.
-        This page keeps the project published and provides direct access to the source and a downloadable package.
-      </p>
-      <section class="grid" aria-label="Project metadata">
-        <article class="card"><h3>Branch</h3><div class="mono">dash-driftmeter</div></article>
-        <article class="card"><h3>Runtime</h3><div class="mono">Dash + Python + Postgres</div></article>
-        <article class="card"><h3>Netlify Status</h3><div class="mono">Landing page active (static)</div></article>
+      <section class="card">
+        <h1>Dash DriftMeter</h1>
+        <p class="m">Capture config snapshots by environment and compare drift with risk scoring.</p>
+        <p id="status" class="m">Checking API...</p>
       </section>
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/dash-driftmeter.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/dash-driftmeter">View Branch Source</a>
-      </div>
-      <p class="foot">To run the full app, use the local runtime documented in the branch README.</p>
+      <section class="row">
+        <article class="card">
+          <h2>Capture Snapshot</h2>
+          <input id="env" placeholder="env (dev/stage/prod)" value="dev" />
+          <input id="label" placeholder="snapshot label" />
+          <textarea id="payload" rows="10">API_URL=https://api.example.com
+FEATURE_X=true
+SECRET_TOKEN=abc123</textarea>
+          <button id="create">Create Snapshot</button>
+          <div id="captureOut" class="m"></div>
+        </article>
+        <article class="card">
+          <h2>Compare</h2>
+          <input id="envA" placeholder="env A" value="dev" />
+          <select id="snapA"></select>
+          <input id="envB" placeholder="env B" value="prod" />
+          <select id="snapB"></select>
+          <button id="compare">Compare Snapshots</button>
+          <div id="compareOut" class="m"></div>
+        </article>
+      </section>
+      <section class="card" style="margin-top:12px;">
+        <h2>Diff</h2>
+        <div id="diff" class="m">No diff yet.</div>
+      </section>
     </main>
+    <script>
+      const key = localStorage.dashDriftmeterKey || (localStorage.dashDriftmeterKey = `dash-driftmeter-${crypto.randomUUID()}`);
+      const headers = {'Content-Type':'application/json','X-Device-Key':key};
+      const statusEl = document.getElementById('status');
+
+      async function health() {
+        const res = await fetch('/api/health/db');
+        const data = await res.json();
+        statusEl.textContent = data.ok ? 'API connected to database.' : `API warning: ${data.error || 'unavailable'}`;
+      }
+
+      async function loadSnapshots(env, selectId) {
+        const res = await fetch(`/api/driftmeter/snapshots?env=${encodeURIComponent(env)}`, { headers });
+        const data = await res.json().catch(()=>({}));
+        const rows = Array.isArray(data.snapshots) ? data.snapshots : [];
+        document.getElementById(selectId).innerHTML = rows.map(r => `<option value="${r.id}">${r.label} (${new Date(r.created_at).toLocaleString()})</option>`).join('');
+      }
+
+      document.getElementById('create').onclick = async () => {
+        const payload = {
+          env: document.getElementById('env').value.trim(),
+          label: document.getElementById('label').value.trim() || `snapshot-${Date.now()}`,
+          payload: document.getElementById('payload').value
+        };
+        const res = await fetch('/api/driftmeter/snapshots', { method:'POST', headers, body:JSON.stringify(payload) });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok) { alert(data.error || data.detail || 'Failed to create snapshot'); return; }
+        document.getElementById('captureOut').textContent = `Created ${data.snapshot.label} with ${data.snapshot.item_count} items.`;
+        await loadSnapshots(document.getElementById('envA').value.trim(), 'snapA');
+        await loadSnapshots(document.getElementById('envB').value.trim(), 'snapB');
+      };
+
+      document.getElementById('compare').onclick = async () => {
+        const payload = { snapshot_a: document.getElementById('snapA').value, snapshot_b: document.getElementById('snapB').value };
+        const res = await fetch('/api/driftmeter/compare', { method:'POST', headers, body:JSON.stringify(payload) });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok) { alert(data.error || data.detail || 'Compare failed'); return; }
+        document.getElementById('compareOut').textContent = `Risk score: ${data.risk_score}`;
+        const rows = Array.isArray(data.diff) ? data.diff : [];
+        if (!rows.length) { document.getElementById('diff').textContent = 'No rows'; return; }
+        document.getElementById('diff').innerHTML = `<table><thead><tr><th>key</th><th>status</th><th>risk</th><th>a</th><th>b</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.key}</td><td>${r.status}</td><td>${r.risk}</td><td>${r.value_a ?? ''}</td><td>${r.value_b ?? ''}</td></tr>`).join('')}</tbody></table>`;
+      };
+
+      document.getElementById('envA').onchange = () => loadSnapshots(document.getElementById('envA').value.trim(), 'snapA');
+      document.getElementById('envB').onchange = () => loadSnapshots(document.getElementById('envB').value.trim(), 'snapB');
+
+      health().catch(()=>{ statusEl.textContent='API unavailable.'; });
+      loadSnapshots(document.getElementById('envA').value.trim(), 'snapA');
+      loadSnapshots(document.getElementById('envB').value.trim(), 'snapB');
+    </script>
   </body>
 </html>
