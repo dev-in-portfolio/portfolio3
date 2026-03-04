@@ -38,7 +38,7 @@ function requireDb() {
 
 async function getUserId(deviceKey) {
   const { rows } = await pool.query(
-    `insert into users (device_key)
+    `insert into rr_users (device_key)
      values ($1)
      on conflict (device_key) do update set device_key = excluded.device_key
      returning id`,
@@ -77,9 +77,9 @@ app.get('/api/relayroom/rooms', async (req, res, next) => {
     const userId = await getUserId(req.deviceKey);
     const { rows } = await pool.query(
       `select r.id, r.name, r.invite_code, r.created_at,
-              (select count(*)::int from room_members m where m.room_id = r.id) as members
-       from rooms r
-       join room_members m on m.room_id = r.id
+              (select count(*)::int from rr_room_members m where m.room_id = r.id) as members
+       from rr_rooms r
+       join rr_room_members m on m.room_id = r.id
        where m.user_id = $1
        order by r.created_at desc`,
       [userId]
@@ -99,11 +99,11 @@ app.post('/api/relayroom/rooms', async (req, res, next) => {
     if (!name) return res.status(400).json({ error: 'name required' });
     await client.query('begin');
     const room = await client.query(
-      'insert into rooms (owner_id, name, invite_code) values ($1, $2, $3) returning id, name, invite_code, created_at',
+      'insert into rr_rooms (owner_id, name, invite_code) values ($1, $2, $3) returning id, name, invite_code, created_at',
       [userId, name, inviteCode()]
     );
     await client.query(
-      'insert into room_members (room_id, user_id, role) values ($1, $2, $3)',
+      'insert into rr_room_members (room_id, user_id, role) values ($1, $2, $3)',
       [room.rows[0].id, userId, 'owner']
     );
     await client.query('commit');
@@ -122,10 +122,10 @@ app.post('/api/relayroom/join', async (req, res, next) => {
     const userId = await getUserId(req.deviceKey);
     const code = String(req.body.inviteCode || '').trim().toUpperCase();
     if (!code) return res.status(400).json({ error: 'inviteCode required' });
-    const room = await pool.query('select id, name, invite_code, created_at from rooms where invite_code = $1 limit 1', [code]);
+    const room = await pool.query('select id, name, invite_code, created_at from rr_rooms where invite_code = $1 limit 1', [code]);
     if (!room.rows[0]) return res.status(404).json({ error: 'room not found' });
     await pool.query(
-      `insert into room_members (room_id, user_id, role) values ($1, $2, 'member')
+      `insert into rr_room_members (room_id, user_id, role) values ($1, $2, 'member')
        on conflict (room_id, user_id) do nothing`,
       [room.rows[0].id, userId]
     );
@@ -139,10 +139,10 @@ app.get('/api/relayroom/rooms/:id/notes', async (req, res, next) => {
   try {
     requireDb();
     const userId = await getUserId(req.deviceKey);
-    const allowed = await pool.query('select 1 from room_members where room_id = $1 and user_id = $2', [req.params.id, userId]);
+    const allowed = await pool.query('select 1 from rr_room_members where room_id = $1 and user_id = $2', [req.params.id, userId]);
     if (!allowed.rows[0]) return res.status(403).json({ error: 'not a member' });
     const { rows } = await pool.query(
-      `select id, title, body, created_at from room_notes where room_id = $1 order by created_at desc limit 200`,
+      `select id, title, body, created_at from rr_room_notes where room_id = $1 order by created_at desc limit 200`,
       [req.params.id]
     );
     res.json({ notes: rows });
@@ -155,13 +155,13 @@ app.post('/api/relayroom/rooms/:id/notes', async (req, res, next) => {
   try {
     requireDb();
     const userId = await getUserId(req.deviceKey);
-    const allowed = await pool.query('select 1 from room_members where room_id = $1 and user_id = $2', [req.params.id, userId]);
+    const allowed = await pool.query('select 1 from rr_room_members where room_id = $1 and user_id = $2', [req.params.id, userId]);
     if (!allowed.rows[0]) return res.status(403).json({ error: 'not a member' });
     const title = String(req.body.title || '').slice(0, 120);
     const body = String(req.body.body || '').slice(0, 5000);
     if (!body) return res.status(400).json({ error: 'body required' });
     const { rows } = await pool.query(
-      `insert into room_notes (room_id, user_id, title, body)
+      `insert into rr_room_notes (room_id, user_id, title, body)
        values ($1, $2, $3, $4)
        returning id, title, body, created_at`,
       [req.params.id, userId, title, body]
