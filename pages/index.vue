@@ -74,24 +74,28 @@ onMounted(() => {
       <p>Live status tiles with server-owned rule evaluation.</p>
     </header>
     <section class="panel controls">
-      <input v-model="newName" placeholder="New signal name" />
-      <input v-model="newKind" placeholder="Kind (generic, infra, app...)" />
-      <button class="primary" @click="createSignal">Add Signal</button>
-      <NuxtLink class="ghost" to="/manage">Bulk Manage</NuxtLink>
-      <select v-model="filterStatus">
-        <option value="all">All status</option>
-        <option value="ok">OK</option>
-        <option value="warn">WARN</option>
-        <option value="bad">BAD</option>
-      </select>
-      <input v-model="filterKind" placeholder="Filter kind" />
-      <select v-model="sortMode">
-        <option value="severity">Severity</option>
-        <option value="recent">Recent</option>
-      </select>
-      <button class="ghost" @click="polling = !polling">{{ polling ? 'Pause' : 'Resume' }}</button>
-      <button class="primary" @click="fetchBoard">Refresh</button>
-      <span class="pill">Last sync {{ lastSync }}</span>
+      <div class="controls-row">
+        <input v-model="newName" placeholder="New signal name" />
+        <input v-model="newKind" placeholder="Kind (generic, infra, app...)" />
+        <button class="primary" @click="createSignal">Add Signal</button>
+        <NuxtLink class="ghost" to="/manage">Bulk Manage</NuxtLink>
+      </div>
+      <div class="controls-row">
+        <select v-model="filterStatus">
+          <option value="all">All status</option>
+          <option value="ok">OK</option>
+          <option value="warn">WARN</option>
+          <option value="bad">BAD</option>
+        </select>
+        <input v-model="filterKind" placeholder="Filter kind" />
+        <select v-model="sortMode">
+          <option value="severity">Severity</option>
+          <option value="recent">Recent</option>
+        </select>
+        <button class="ghost" @click="polling = !polling">{{ polling ? 'Pause' : 'Resume' }}</button>
+        <button class="primary" @click="fetchBoard">Refresh</button>
+        <span class="sync-pill">Last sync {{ lastSync || '—' }}</span>
+      </div>
     </section>
     <p v-if="createStatus" class="muted">{{ createStatus }}</p>
     <p v-if="error" class="muted">{{ error }}</p>
@@ -124,10 +128,60 @@ onMounted(() => {
   color: #94a3b8;
 }
 .controls {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.6));
+}
+.controls-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
+}
+input,
+select {
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(2, 6, 23, 0.65);
+  color: #e2e8f0;
+  padding: 8px 12px;
+}
+input::placeholder {
+  color: #94a3b8;
+}
+.primary,
+.ghost {
+  min-height: 40px;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.primary {
+  border: 1px solid #0ea5e9;
+  background: #0ea5e9;
+  color: #041018;
+}
+.ghost {
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.4);
+  color: #f8fafc;
+}
+.sync-pill {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.3);
 }
 .grid {
   display: grid;
