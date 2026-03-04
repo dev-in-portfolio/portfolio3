@@ -9,6 +9,9 @@ const filterKind = ref('');
 const sortMode = ref('severity');
 const lastSync = ref('');
 const error = ref('');
+const newName = ref('');
+const newKind = ref('generic');
+const createStatus = ref('');
 
 const fetchBoard = async () => {
   try {
@@ -19,6 +22,26 @@ const fetchBoard = async () => {
     lastSync.value = new Date().toLocaleTimeString();
   } catch (err: any) {
     error.value = err?.message || 'Failed to load board';
+  }
+};
+
+const createSignal = async () => {
+  const name = newName.value.trim();
+  if (!name) {
+    createStatus.value = 'Enter a signal name first.';
+    return;
+  }
+  try {
+    await $fetch('/api/signalgrid/signals', {
+      method: 'POST',
+      headers: { 'X-Device-Key': deviceKey },
+      body: { name, kind: newKind.value },
+    });
+    newName.value = '';
+    createStatus.value = 'Signal created.';
+    await fetchBoard();
+  } catch (err: any) {
+    createStatus.value = err?.message || 'Failed to create signal';
   }
 };
 
@@ -51,6 +74,10 @@ onMounted(() => {
       <p>Live status tiles with server-owned rule evaluation.</p>
     </header>
     <section class="panel controls">
+      <input v-model="newName" placeholder="New signal name" />
+      <input v-model="newKind" placeholder="Kind (generic, infra, app...)" />
+      <button class="primary" @click="createSignal">Add Signal</button>
+      <NuxtLink class="ghost" to="/manage">Bulk Manage</NuxtLink>
       <select v-model="filterStatus">
         <option value="all">All status</option>
         <option value="ok">OK</option>
@@ -66,6 +93,7 @@ onMounted(() => {
       <button class="primary" @click="fetchBoard">Refresh</button>
       <span class="pill">Last sync {{ lastSync }}</span>
     </section>
+    <p v-if="createStatus" class="muted">{{ createStatus }}</p>
     <p v-if="error" class="muted">{{ error }}</p>
     <section class="grid">
       <article v-for="signal in filtered" :key="signal.id" class="card">
