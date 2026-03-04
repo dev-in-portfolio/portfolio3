@@ -1,7 +1,14 @@
 create extension if not exists pgcrypto;
 
-create table if not exists flow_events (
+create table if not exists dfl_users (
   id uuid primary key default gen_random_uuid(),
+  device_key text not null unique,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists dfl_flow_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references dfl_users(id) on delete cascade,
   entity_id text not null,
   stage text not null,
   entered_at timestamptz not null,
@@ -9,6 +16,6 @@ create table if not exists flow_events (
   metadata jsonb not null default '{}'::jsonb
 );
 
-create index if not exists idx_flow_entity on flow_events(entity_id);
-create index if not exists idx_flow_stage on flow_events(stage);
-create index if not exists idx_flow_time on flow_events(entered_at);
+create index if not exists idx_dfl_flow_user_entity on dfl_flow_events(user_id, entity_id);
+create index if not exists idx_dfl_flow_user_stage on dfl_flow_events(user_id, stage);
+create index if not exists idx_dfl_flow_user_time on dfl_flow_events(user_id, entered_at);
