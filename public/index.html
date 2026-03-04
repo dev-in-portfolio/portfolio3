@@ -3,73 +3,120 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Island Index | Portfolio Preview</title>
+    <title>Island Index</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
-      :root {
-        --bg: #0b0f19;
-        --bg-2: #101a2c;
-        --surface: rgba(14, 22, 39, 0.72);
-        --surface-2: rgba(25, 34, 56, 0.8);
-        --fg: #e8eefc;
-        --muted: #9eb0d2;
-        --accent: #4fd1ff;
-        --accent-2: #8e9dff;
-        --outline: rgba(125, 152, 206, 0.26);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-        color: var(--fg);
-        background:
-          radial-gradient(circle at 18% 10%, rgba(79, 209, 255, 0.18), transparent 36%),
-          radial-gradient(circle at 82% 0%, rgba(142, 157, 255, 0.18), transparent 42%),
-          linear-gradient(180deg, var(--bg), var(--bg-2));
-      }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 64px 24px 84px; }
-      .badge {
-        display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px;
-        border-radius: 999px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--accent); background: rgba(79, 209, 255, 0.1); border: 1px solid rgba(79, 209, 255, 0.3);
-      }
-      h1 { margin: 18px 0 10px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.1; }
-      .lead { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.1vw, 1.15rem); line-height: 1.65; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 34px; }
-      .card { border-radius: 16px; border: 1px solid var(--outline); background: var(--surface); padding: 16px; }
-      .card h3 { margin: 0 0 7px; font-size: 0.95rem; color: #cdd8f2; }
-      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; color: #dbe7ff; word-break: break-word; }
-      .actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn {
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 11px 15px; border-radius: 12px; text-decoration: none; font-size: 0.9rem;
-        border: 1px solid transparent; transition: transform 120ms ease;
-      }
-      .btn.primary { color: #001729; background: linear-gradient(90deg, #69dcff, #8ea7ff); }
-      .btn.secondary { color: #d7e5ff; background: var(--surface-2); border-color: var(--outline); }
-      .btn:hover { transform: translateY(-1px); }
-      .foot { margin-top: 30px; color: #93a8cf; font-size: 0.9rem; }
+      :root { --bg:#091223; --card:#0f1a32; --txt:#e9f0ff; --m:#9ab0db; --a:#6ce4ff; --b:#91a2ff; --bd:#2f4678; }
+      * { box-sizing:border-box; }
+      body { margin:0; font-family: Inter, system-ui, sans-serif; color:var(--txt); background: radial-gradient(circle at 20% 0, #1d2f5f 0, #091223 58%); }
+      .wrap { max-width:1040px; margin:0 auto; padding:24px; }
+      .card { border:1px solid var(--bd); border-radius:14px; background:var(--card); padding:14px; }
+      .controls { display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px; }
+      input,select,button { border-radius:10px; border:1px solid #355697; background:#0b1530; color:var(--txt); padding:10px; }
+      button { background:linear-gradient(90deg,var(--a),var(--b)); color:#061124; font-weight:700; border:none; cursor:pointer; }
+      .grid { margin-top:12px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+      .item { border:1px solid #2b4477; border-radius:10px; background:#0d1733; padding:10px; }
+      .m { color:var(--m); font-size:.9rem; }
+      .views { margin-top:12px; display:grid; gap:8px; }
+      @media(max-width:920px){ .controls{grid-template-columns:1fr 1fr; } }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>Island Index</h1>
-      <p class="lead">
-        Island Index is a runtime-backed application (Fresh + Deno + Postgres) and cannot execute directly on Netlify static hosting.
-        This page keeps the project published and provides direct access to the source and a downloadable package.
-      </p>
-      <section class="grid" aria-label="Project metadata">
-        <article class="card"><h3>Branch</h3><div class="mono">island-index</div></article>
-        <article class="card"><h3>Runtime</h3><div class="mono">Fresh + Deno + Postgres</div></article>
-        <article class="card"><h3>Netlify Status</h3><div class="mono">Landing page active (static)</div></article>
+      <section class="card">
+        <h1>Island Index</h1>
+        <p class="m">Filterable content index with saved views (Neon-backed).</p>
+        <p id="status" class="m">Checking API...</p>
+        <div class="controls">
+          <input id="search" placeholder="Search title" />
+          <input id="tag" placeholder="Tag" />
+          <select id="sort"><option value="newest">Newest</option><option value="score">Score</option></select>
+          <input id="viewName" placeholder="Save view as" />
+          <button id="saveView">Save View</button>
+        </div>
       </section>
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/island-index.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/island-index">View Branch Source</a>
-      </div>
-      <p class="foot">To run the full app, use the local runtime documented in the branch README.</p>
+      <section class="card" style="margin-top:12px;">
+        <h2>Items</h2>
+        <div id="items" class="grid"></div>
+      </section>
+      <section class="card" style="margin-top:12px;">
+        <h2>Saved Views</h2>
+        <div id="views" class="views"></div>
+      </section>
     </main>
+    <script>
+      const key = localStorage.islandIndexKey || (localStorage.islandIndexKey = `island-index-${crypto.randomUUID()}`);
+      const headers = { 'Content-Type': 'application/json', 'X-Device-Key': key };
+
+      const statusEl = document.getElementById('status');
+      const itemsEl = document.getElementById('items');
+      const viewsEl = document.getElementById('views');
+      const searchEl = document.getElementById('search');
+      const tagEl = document.getElementById('tag');
+      const sortEl = document.getElementById('sort');
+
+      function queryState() { return { search: searchEl.value.trim(), tag: tagEl.value.trim(), sort: sortEl.value }; }
+
+      async function health() {
+        const res = await fetch('/api/health/db');
+        const data = await res.json();
+        statusEl.textContent = data.ok ? 'API connected to database.' : `API warning: ${data.error || 'unavailable'}`;
+      }
+
+      async function loadItems() {
+        const qs = new URLSearchParams(queryState()).toString();
+        const res = await fetch(`/api/items?${qs}`);
+        const data = await res.json();
+        itemsEl.innerHTML = '';
+        data.items.forEach((item) => {
+          const el = document.createElement('article');
+          el.className = 'item';
+          el.innerHTML = `<strong>${item.title}</strong><p>${item.summary}</p><div class='m'>Score ${item.score} | ${item.tags.join(' · ')}</div>`;
+          itemsEl.appendChild(el);
+        });
+      }
+
+      async function loadViews() {
+        const res = await fetch('/api/views', { headers });
+        const data = await res.json();
+        viewsEl.innerHTML = '';
+        const views = Array.isArray(data.views) ? data.views : [];
+        if (!views.length) { viewsEl.innerHTML = '<div class="m">No saved views.</div>'; return; }
+        views.forEach((v) => {
+          const row = document.createElement('div');
+          row.className = 'item';
+          row.innerHTML = `<strong>${v.name}</strong><div class='m'>${new Date(v.updated_at).toLocaleString()}</div>`;
+          const buttons = document.createElement('div');
+          buttons.style.display='grid'; buttons.style.gridTemplateColumns='1fr 1fr'; buttons.style.gap='8px'; buttons.style.marginTop='8px';
+          const apply = document.createElement('button'); apply.textContent='Apply';
+          apply.onclick = () => {
+            searchEl.value = v.state.search || '';
+            tagEl.value = v.state.tag || '';
+            sortEl.value = v.state.sort || 'newest';
+            loadItems();
+          };
+          const del = document.createElement('button'); del.textContent='Delete';
+          del.onclick = async () => { await fetch(`/api/views?id=${encodeURIComponent(v.id)}`, { method:'DELETE', headers }); await loadViews(); };
+          buttons.append(apply, del); row.appendChild(buttons); viewsEl.appendChild(row);
+        });
+      }
+
+      ['input','change'].forEach((ev) => {
+        searchEl.addEventListener(ev, () => loadItems());
+        tagEl.addEventListener(ev, () => loadItems());
+        sortEl.addEventListener(ev, () => loadItems());
+      });
+
+      document.getElementById('saveView').onclick = async () => {
+        const name = document.getElementById('viewName').value.trim();
+        if (!name) return;
+        await fetch('/api/views', { method:'POST', headers, body: JSON.stringify({ name, state: queryState() }) });
+        document.getElementById('viewName').value = '';
+        await loadViews();
+      };
+
+      health().catch(() => { statusEl.textContent = 'API unavailable.'; });
+      loadItems();
+      loadViews().catch(() => { viewsEl.innerHTML = '<div class="m">Failed to load views.</div>'; });
+    </script>
   </body>
 </html>
