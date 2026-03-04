@@ -7,7 +7,12 @@ const { Pool } = require('pg');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3014);
-const DATABASE_URL = process.env.DATABASE_URL || '';
+const DATABASE_URL =
+  process.env.LINEFLOW_DATABASE_URL ||
+  process.env.DATABASE_URL ||
+  process.env.NETLIFY_DATABASE_URL ||
+  process.env.NETLIFY_DATABASE_URL_UNPOOLED ||
+  '';
 const MAX_ACTIVE_TIMERS = 50;
 const MAX_PRESETS = 200;
 const MAX_LABEL_LENGTH = 140;
