@@ -32,6 +32,14 @@ app.use(
   })
 );
 app.use(express.json({ limit: '100kb' }));
+app.use((req, _res, next) => {
+  if (req.url === '/api') {
+    req.url = '/';
+  } else if (req.url.startsWith('/api/')) {
+    req.url = req.url.slice(4);
+  }
+  next();
+});
 app.use((req, res, next) => {
   const requestId = crypto.randomUUID();
   res.setHeader('X-Request-Id', requestId);
