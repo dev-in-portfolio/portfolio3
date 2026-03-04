@@ -115,6 +115,30 @@ textarea {
   font-size: 12px;
 }
 
+a {
+  color: #7dd3fc;
+}
+
+a:hover {
+  color: #bae6fd;
+}
+
+a.card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.link {
+  color: #7dd3fc;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  color: #bae6fd;
+}
+
 @media (max-width: 720px) {
   header {
     flex-direction: column;

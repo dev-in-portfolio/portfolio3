@@ -311,7 +311,7 @@ export default function TagDetailPage() {
                 <strong>{thing.title}</strong>
                 <p className="muted">{thing.body || 'No notes'}</p>
                 {thing.url && (
-                  <a className="muted" href={thing.url} target="_blank" rel="noreferrer">{thing.url}</a>
+                  <a className="link" href={thing.url} target="_blank" rel="noreferrer">{thing.url}</a>
                 )}
               </div>
             ))}

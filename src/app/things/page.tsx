@@ -190,7 +190,7 @@ export default function ThingsPage() {
             </div>
             <p className="muted">{thing.body || 'No notes'}</p>
             {thing.url && (
-              <a className="muted" href={thing.url} target="_blank" rel="noreferrer">{thing.url}</a>
+              <a className="link" href={thing.url} target="_blank" rel="noreferrer">{thing.url}</a>
             )}
             {thing.tag_ids?.length > 0 && (
               <div className="toolbar" style={{ marginTop: 8 }}>
