@@ -3,65 +3,165 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DiffLens | Portfolio Preview</title>
+    <title>DiffLens</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap");
-      :root {
-        --bg: #0b0f19;
-        --bg-2: #101a2c;
-        --surface: rgba(14, 22, 39, 0.72);
-        --surface-2: rgba(25, 34, 56, 0.8);
-        --fg: #e8eefc;
-        --muted: #9eb0d2;
-        --accent: #4fd1ff;
-        --accent-2: #8e9dff;
-        --outline: rgba(125, 152, 206, 0.26);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-        color: var(--fg);
-        background:
-          radial-gradient(circle at 18% 10%, rgba(79, 209, 255, 0.18), transparent 36%),
-          radial-gradient(circle at 82% 0%, rgba(142, 157, 255, 0.18), transparent 42%),
-          linear-gradient(180deg, var(--bg), var(--bg-2));
-      }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 64px 24px 84px; }
-      .badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: rgba(79, 209, 255, 0.1); border: 1px solid rgba(79, 209, 255, 0.3); }
-      h1 { margin: 18px 0 10px; font-size: clamp(2rem, 3.6vw, 3.1rem); line-height: 1.1; }
-      .lead { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.1vw, 1.15rem); line-height: 1.65; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 34px; }
-      .card { border-radius: 16px; border: 1px solid var(--outline); background: var(--surface); padding: 16px; }
-      .card h3 { margin: 0 0 7px; font-size: 0.95rem; color: #cdd8f2; }
-      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; color: #dbe7ff; word-break: break-word; }
-      .actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 15px; border-radius: 12px; text-decoration: none; font-size: 0.9rem; border: 1px solid transparent; transition: transform 120ms ease; }
-      .btn.primary { color: #001729; background: linear-gradient(90deg, #69dcff, #8ea7ff); }
-      .btn.secondary { color: #d7e5ff; background: var(--surface-2); border-color: var(--outline); }
-      .btn:hover { transform: translateY(-1px); }
-      .foot { margin-top: 30px; color: #93a8cf; font-size: 0.9rem; }
+      :root { --bg:#0a1222; --panel:#17233b; --panel2:#1e2c49; --text:#eaf1ff; --muted:#9eb2db; --line:rgba(147,174,224,.26); }
+      * { box-sizing:border-box; }
+      body { margin:0; font-family:"Space Grotesk",system-ui,sans-serif; color:var(--text); background:linear-gradient(180deg,#0a1222,#0f1b35); }
+      .wrap { max-width:1100px; margin:0 auto; padding:28px 16px 60px; }
+      .hero,.card { border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:14px; }
+      .grid { display:grid; gap:12px; grid-template-columns:1.3fr .8fr; margin-top:12px; }
+      .card { background:var(--panel2); }
+      label { display:block; margin:8px 0 4px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+      select,textarea,input,button { width:100%; border-radius:10px; border:1px solid var(--line); background:#0d1830; color:var(--text); padding:8px 10px; font:inherit; }
+      textarea { min-height:170px; resize:vertical; }
+      .row { display:flex; gap:8px; }
+      .row > * { flex:1; }
+      button { border:0; background:linear-gradient(90deg,#66deff,#8ca6ff); color:#05162c; font-weight:700; cursor:pointer; }
+      button.secondary { border:1px solid var(--line); background:#15233f; color:#dbe9ff; }
+      .list { display:grid; gap:8px; margin-top:10px; max-height:360px; overflow:auto; }
+      .item { border:1px solid var(--line); border-radius:10px; padding:10px; background:#0d182f; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      #output { max-height:420px; overflow:auto; }
+      #msg { min-height:22px; color:var(--muted); }
+      @media (max-width: 920px) { .grid { grid-template-columns:1fr; } .row { flex-direction:column; } }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <div class="badge">Static Netlify Preview</div>
-      <h1>DiffLens</h1>
-      <p class="lead">
-        DiffLens is a runtime-backed application (FastAPI + Python + Postgres) and cannot execute directly on Netlify static hosting.
-        This page keeps the project published and provides direct access to the source and a downloadable package.
-      </p>
-      <section class="grid" aria-label="Project metadata">
-        <article class="card"><h3>Branch</h3><div class="mono">difflens</div></article>
-        <article class="card"><h3>Runtime</h3><div class="mono">FastAPI + Python + Postgres</div></article>
-        <article class="card"><h3>Netlify Status</h3><div class="mono">Landing page active (static)</div></article>
+      <section class="hero">
+        <h1 style="margin:0 0 8px">DiffLens</h1>
+        <p style="margin:0;color:var(--muted)">Text/JSON diff with run history stored per device key.</p>
       </section>
-      <div class="actions">
-        <a class="btn primary" href="https://github.com/dev-in-portfolio/portfolio2/archive/refs/heads/difflens.zip">Download Source ZIP</a>
-        <a class="btn secondary" href="https://github.com/dev-in-portfolio/portfolio2/tree/difflens">View Branch Source</a>
-      </div>
-      <p class="foot">To run the full app, use the local runtime documented in the branch README.</p>
+
+      <section class="grid">
+        <article class="card">
+          <div class="row">
+            <div>
+              <label>Mode</label>
+              <select id="mode"><option value="text">Text</option><option value="json">JSON</option></select>
+            </div>
+            <div>
+              <label>Granularity</label>
+              <select id="granularity"><option value="line">Line</option><option value="word">Word</option><option value="path">Path (JSON)</option></select>
+            </div>
+          </div>
+          <label>Input A</label>
+          <textarea id="a" class="mono">hello\nworld</textarea>
+          <label>Input B</label>
+          <textarea id="b" class="mono">hello\nWORLD</textarea>
+          <div class="row" style="margin-top:10px">
+            <button id="run">Run Diff</button>
+            <button id="validate" class="secondary">Validate</button>
+            <button id="reload" class="secondary">Reload History</button>
+          </div>
+          <p id="msg"></p>
+          <div id="output" class="list"></div>
+        </article>
+
+        <article class="card">
+          <h3 style="margin:0 0 8px">History</h3>
+          <div id="history" class="list"></div>
+        </article>
+      </section>
     </main>
+
+    <script>
+      const keyName = 'difflens_device_key';
+      let userKey = localStorage.getItem(keyName);
+      if (!userKey && crypto.randomUUID) {
+        userKey = crypto.randomUUID();
+        localStorage.setItem(keyName, userKey);
+      }
+
+      const msg = (text, bad = false) => {
+        const el = document.getElementById('msg');
+        el.textContent = text;
+        el.style.color = bad ? '#ffb8b8' : '#9eb2db';
+      };
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, {
+          ...opts,
+          headers: {
+            'content-type': 'application/json',
+            'x-user-key': userKey,
+            ...(opts.headers || {}),
+          },
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.detail || data.error || `http_${res.status}`);
+        return data;
+      }
+
+      function payload() {
+        return {
+          mode: document.getElementById('mode').value,
+          granularity: document.getElementById('granularity').value,
+          a: document.getElementById('a').value,
+          b: document.getElementById('b').value,
+          options: { contextLines: 2, maxDiffChunks: 200 },
+        };
+      }
+
+      function renderDiff(data) {
+        const root = document.getElementById('output');
+        root.innerHTML = '';
+        const top = document.createElement('div');
+        top.className = 'item';
+        top.innerHTML = `<strong>Run ${data.id || ''}</strong><div class="mono">${JSON.stringify(data.summary)}</div>`;
+        root.appendChild(top);
+        for (const chunk of data.diff.slice(0, 120)) {
+          const el = document.createElement('div');
+          el.className = 'item mono';
+          el.textContent = JSON.stringify(chunk);
+          root.appendChild(el);
+        }
+      }
+
+      async function loadHistory() {
+        try {
+          const data = await api('/api/history?limit=30');
+          const root = document.getElementById('history');
+          root.innerHTML = '';
+          for (const item of data.items || []) {
+            const el = document.createElement('button');
+            el.className = 'item mono';
+            el.style.textAlign = 'left';
+            el.innerHTML = `<strong>${item.mode}/${item.granularity}</strong><div>${new Date(item.createdAt).toLocaleString()}</div>`;
+            el.onclick = async () => {
+              try {
+                const run = await api(`/api/runs/${item.id}`);
+                renderDiff({ id: run.id, summary: run.result.summary, diff: run.result.diff });
+              } catch (e) {
+                msg(e.message, true);
+              }
+            };
+            root.appendChild(el);
+          }
+        } catch (e) {
+          msg(e.message, true);
+        }
+      }
+
+      document.getElementById('run').onclick = async () => {
+        try {
+          const data = await api('/api/diff', { method: 'POST', body: JSON.stringify(payload()) });
+          renderDiff(data);
+          msg('Diff run saved.');
+          await loadHistory();
+        } catch (e) { msg(e.message, true); }
+      };
+
+      document.getElementById('validate').onclick = async () => {
+        try {
+          const data = await api('/api/diff/validate', { method: 'POST', body: JSON.stringify(payload()) });
+          msg(`Payload valid (${data.mode}/${data.granularity}).`);
+        } catch (e) { msg(e.message, true); }
+      };
+
+      document.getElementById('reload').onclick = loadHistory;
+      loadHistory();
+    </script>
   </body>
 </html>
