@@ -80,12 +80,16 @@
   function normalizeInternalNavigation() {
     try {
       var absoluteHrefRe = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
-      document.querySelectorAll('a[href]').forEach(function (link) {
-        var raw = String(link.getAttribute('href') || '').trim();
+      function absolutizeAttr(node, attr) {
+        var raw = String(node.getAttribute(attr) || '').trim();
         if (!raw || raw.charAt(0) === '/' || absoluteHrefRe.test(raw)) return;
         var resolved = new URL(raw, window.location.href);
         if (resolved.origin !== window.location.origin) return;
-        link.setAttribute('href', resolved.pathname + resolved.search + resolved.hash);
+        node.setAttribute(attr, resolved.pathname + resolved.search + resolved.hash);
+      }
+      document.querySelectorAll('a[href], [data-href]').forEach(function (link) {
+        absolutizeAttr(link, 'href');
+        absolutizeAttr(link, 'data-href');
       });
     } catch (_) {}
   }
