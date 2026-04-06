@@ -1,22 +1,25 @@
-# String
+# STRING THEORY (4D Manifold Lab) - Developer Documentation
 
-## Overview
-String loads as a standalone page and initializes its UI on load. Entry page: `index.html`.
+STRING THEORY is a high-performance WebGL application using Three.js for rendering complex mathematical surfaces (4D manifolds) with advanced post-processing pipelines. The app now also layers product scaffolding on top of the renderer: authored presets, snapshot comparison, and a teaching-oriented explanation surface.
 
-## What you can do
-- Open the app from the Apps menu (or navigate directly to its route).
-- Use any visible controls, menus, sliders, buttons, or toggles.
-- If the app includes a visual/canvas area, changes should appear as you interact with controls.
+## Architecture & Tech Stack
+- **Engine**: Three.js (v0.160.0).
+- **Post-Processing**: Uses `EffectComposer` with `RenderPass`, `ShaderPass`, `SSAOPass` (T168), and `UnrealBloomPass` (T159) for cinematic rendering.
+- **Styling**: Raw CSS with extensive use of CSS variables for a dark-mode, glassmorphism UI theme.
+- **Layout**: CSS Flexbox and custom viewport height variables (`--svh`) to handle mobile browser chrome.
 
-## How it works
-- The app loads its entry page, then initializes scripts and styles referenced by that page.
-- Rendering updates are driven by the app’s internal event handlers (button clicks, input changes, etc.).
+## Key Components
+- **Canvas (`#glCanvas`)**: The primary WebGL rendering target. It includes pointer event handling for orbital controls.
+- **Shader Pipeline**: Integrates custom luminosity high-pass filters and SSAO to give depth and glow to the abstract geometry.
+- **UI Overlay**: Absolute positioned HTML elements overlaying the WebGL context, designed to not capture pointer events where unnecessary (`pointer-events: none`).
+- **Authored Preset Layer**: Named state bundles that convert raw manifold parameters into intentional exploration stories.
+- **Compare State Layer**: Two local snapshot slots that let the user capture, re-apply, and narratively compare parameter states.
+- **Teaching Layer**: A lightweight explanation panel that translates the current family and parameter balance into a non-specialist framing.
 
-## Key files (for edits)
-### Pages
-- `index.html`
+## Performance Optimizations
+- **Event Handling**: Implements `touch-action: none` on the canvas to prevent default browser scrolling during 3D interactions.
+- **Lazy Rendering**: The application may throttle rendering when idle depending on the internal loop implementation.
+- **State Persistence**: Authored preset selection and local comparison snapshots persist through the existing local `StateStore` seam rather than introducing shared repo state.
 
-## Troubleshooting
-- If something looks stale after deploy: hard refresh (mobile: pull-to-refresh + clear site data if needed).
-- If something looks empty: open the Console and fix missing file errors first (404/failed to load).
-- If input responds but visuals don’t update: refresh once to reinitialize the render loop.
+## Deployment Notes
+- All Three.js dependencies are loaded via `unpkg.com` CDNs. Ensure network access or bundle these scripts if deploying to a strictly offline environment.

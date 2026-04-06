@@ -1,25 +1,32 @@
-# Ubr
+# UBR - Developer Documentation
 
-## Overview
-Ubr loads as a standalone page and initializes its UI on load. Entry page: `index.html`.
+UBR (Ultimate Broker Routing) is a browser-based routing workstation for turning OCR intake into reviewed load objects and route decisions.
 
-## What you can do
-- Open the app from the Apps menu (or navigate directly to its route).
-- Use any visible controls, menus, sliders, buttons, or toggles.
-- If the app includes a visual/canvas area, changes should appear as you interact with controls.
+## Architecture & Tech Stack
+- HTML5, CSS3, Vanilla JavaScript.
+- Tailwind CSS for responsive layout and styling.
+- Leaflet.js for interactive maps.
+- Cropper.js for image manipulation.
+- Tesseract.js for Optical Character Recognition (OCR).
+- Local storage for saved load objects and correction history.
 
-## How it works
-- The app loads its entry page, then initializes scripts and styles referenced by that page.
-- Rendering updates are driven by the app’s internal event handlers (button clicks, input changes, etc.).
+## Key Systems / Components
+- Mapping Module: Initializes and manages Leaflet maps, markers, and routing layers.
+- Image Processing: Integrates Cropper.js to allow users to format images before data extraction.
+- Data Extraction (OCR): Uses Tesseract.js to run client-side text recognition on cropped image data.
+- Structured Load Review: Converts OCR text into a normalized load object with confidence, queue bucket, validation state, and review reasons.
+- Queue Management: Splits reviewed loads into ready, review, and exception queues with reopen-for-fix behavior.
+- Strategy Comparison: Uses reviewed load data plus geocoded pickup/delivery estimates to compare margin, distance, deadhead, and risk tradeoffs.
+- UI/Dashboard: A Tailwind-powered layout managing the complex state of various panels.
 
-## Key files (for edits)
-### Pages
-- `index.html`
+## Performance & Accessibility / Development Notes
+- Tesseract.js downloads language models asynchronously; ensure loading states are clearly communicated to the user.
+- Map instances should be properly destroyed or managed when navigating away to prevent memory leaks.
+- Cropper.js interactions need careful tuning for touch devices.
+- Structured extraction is heuristic right now; manual review remains part of the intended workflow, and exception-queue behavior is intentional rather than a failure state.
 
-### Scripts
-- `app.js`
-
-## Troubleshooting
-- If something looks stale after deploy: hard refresh (mobile: pull-to-refresh + clear site data if needed).
-- If something looks empty: open the Console and fix missing file errors first (404/failed to load).
-- If input responds but visuals don’t update: refresh once to reinitialize the render loop.
+## Integration & DB
+- Operates primarily client-side for portfolio demonstration.
+- Leaflet relies on external tile servers (e.g., OpenStreetMap).
+- Tesseract.js relies on external language data blobs.
+- Backend database integration would be required for a production environment to save routes, reviewed load objects, and audit history.

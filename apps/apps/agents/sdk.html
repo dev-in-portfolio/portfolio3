@@ -53,6 +53,17 @@ pack.json
   </div>
 <div class="sep"></div>
 <p><b>Receipts</b>: Every run writes <span class="tag">receipts.json</span> plus <span class="tag">artifacts/</span>.</p>
+<div class="sep"></div>
+<div class="code">{
+  "schemaVersion": "agent-run.v1",
+  "run": {
+    "id": "sample_run_001",
+    "status": "completed",
+    "task": { "templateId": "portfolio-structural-audit" },
+    "timeline": [{ "kind": "tool", "status": "completed", "tool": "local.fs.list" }],
+    "artifacts": [{ "type": "json", "path": "artifacts/audit.report.json" }]
+  }
+}</div>
 </div>
 <div class="footer">AgentX demo module • local runner + packs + receipts • v0.3.0</div>
 </div>

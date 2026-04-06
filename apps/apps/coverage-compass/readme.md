@@ -1,35 +1,26 @@
-# Coverage Compass
+# Coverage Compass - Developer Documentation
 
-## Overview
-Coverage Compass loads as a standalone page and initializes its UI on load. Entry page: `index.html`.
+Coverage Compass is a purely client-side heuristic engine for Medicare decision support, focused on user privacy and accessibility.
 
-## What you can do
-- Open the app from the Apps menu (or navigate directly to its route).
-- Use any visible controls, menus, sliders, buttons, or toggles.
-- If the app includes a visual/canvas area, changes should appear as you interact with controls.
+## Architecture & Tech Stack
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3.
+- **Logic Engine**: `engine.js` contains the core scoring algorithms and heuristics for evaluating user profiles against Medicare structures.
+- **UI Logic**: `app.js` handles the interactive questionnaire flow, state transitions, and results rendering.
+- **Glossary**: `glossary.js` provides dynamic tooltips and definitions for complex Medicare terminology.
 
-## How it works
-- The app loads its entry page, then initializes scripts and styles referenced by that page.
-- Rendering updates are driven by the app’s internal event handlers (button clicks, input changes, etc.).
+## Key Systems
+- **Scoring Heuristics**: Evaluates cost predictability, provider dependency, and administrative friction.
+- **State-Aware Rules**: Models specific state regulations regarding Medigap underwriting.
+- **Visible Result Explanation**: The main result now surfaces a confidence banner plus a compact decision trace.
+- **Profile Snapshot Comparison**: `app.js` now stores up to five local profile snapshots and diffs recommendation, confidence, and answer changes against the current state.
+- **Recommendation Sensitivity Layer**: The result view now reruns the current profile with individual answers removed to rank which questions are most responsible for the current winner and which ones can flip it.
+- **Audit Logging**: The engine still generates a deeper explanation trace and raw audit log for transparency.
 
-## Key files (for edits)
-### Pages
-- `index.html`
+## Performance & Accessibility (A11y)
+- Strict adherence to contrast ratios and focus states (Phase 4 of CSS).
+- Keyboard navigable with clear visual indicators.
+- Local-first architecture ensures zero latency between questions.
 
-### Scripts
-- `app.js`
-- `engine.js`
-- `glossary.js`
-
-### Styles
-- `styles.css`
-- `theme-highcontrast.css`
-- `theme-light.css`
-
-### Folders
-- `legal_pack_md/`
-
-## Troubleshooting
-- If something looks stale after deploy: hard refresh (mobile: pull-to-refresh + clear site data if needed).
-- If something looks empty: open the Console and fix missing file errors first (404/failed to load).
-- If input responds but visuals don’t update: refresh once to reinitialize the render loop.
+## DB Integration
+- Zero server communication by default to maintain strict privacy. Data is stored in `localStorage` or `sessionStorage`.
+- Snapshot comparison records are stored under a separate local key so scenario memory stays local to the browser.
