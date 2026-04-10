@@ -1,54 +1,80 @@
-// State Management Module
+import { createTemplateSchema, deepClone, normalizeSchema } from "./utils.js";
+
 const state = {
+  backendReady: true,
   forms: [],
   activeForm: null,
-  activeSchema: null,
+  draftSchema: createTemplateSchema("signal"),
   responses: [],
-  analytics: null,
-  currentView: 'forms', // 'forms', 'builder', 'inbox', 'public'
-  filters: {
-    status: 'all',
-    search: '',
-    dateRange: null,
+  selectedTemplate: "signal",
+  createName: "Signal Intake",
+  createDescription: "",
+  publicForm: null,
+  busy: {
+    create: false,
+    save: false,
+    publish: false,
+    delete: false,
+    export: false,
   },
 };
 
+function setForms(forms) {
+  state.forms = Array.isArray(forms) ? forms : [];
+}
+
 function setActiveForm(form) {
-  state.activeForm = form;
-  state.activeSchema = form ? { ...form.schema } : null;
+  state.activeForm = form
+    ? {
+        ...form,
+        schema: normalizeSchema(form.schema),
+      }
+    : null;
+  state.responses = [];
+  state.draftSchema = form
+    ? deepClone(normalizeSchema(form.schema))
+    : createTemplateSchema(state.selectedTemplate);
 }
 
-function updateResponseStatus(responseId, newStatus) {
-  const response = state.responses.find(r => r.id === responseId);
-  if (response) {
-    response.status = newStatus;
+function updateDraftSchema(mutator) {
+  const next = deepClone(state.draftSchema);
+  mutator(next);
+  state.draftSchema = normalizeSchema(next);
+}
+
+function resetDraftToActiveForm() {
+  state.draftSchema = state.activeForm
+    ? deepClone(normalizeSchema(state.activeForm.schema))
+    : createTemplateSchema(state.selectedTemplate);
+}
+
+function setResponses(responses) {
+  state.responses = Array.isArray(responses) ? responses : [];
+}
+
+function setBackendReady(value) {
+  state.backendReady = Boolean(value);
+}
+
+function setBusy(key, value) {
+  state.busy[key] = Boolean(value);
+}
+
+function setTemplate(templateId) {
+  state.selectedTemplate = templateId;
+  if (!state.activeForm) {
+    state.draftSchema = createTemplateSchema(templateId);
   }
 }
 
-function applyFilters() {
-  let filtered = state.forms;
-  
-  if (state.filters.status !== 'all') {
-    filtered = filtered.filter(form => form.status === state.filters.status);
-  }
-  
-  if (state.filters.search) {
-    const searchTerm = state.filters.search.toLowerCase();
-    filtered = filtered.filter(form => 
-      form.name.toLowerCase().includes(searchTerm) ||
-      form.id.includes(searchTerm)
-    );
-  }
-  
-  return filtered;
-}
-
-function resetFilters() {
-  state.filters = {
-    status: 'all',
-    search: '',
-    dateRange: null,
-  };
-}
-
-export { state, setActiveForm, updateResponseStatus, applyFilters, resetFilters };
+export {
+  resetDraftToActiveForm,
+  setActiveForm,
+  setBackendReady,
+  setBusy,
+  setForms,
+  setResponses,
+  setTemplate,
+  state,
+  updateDraftSchema,
+};

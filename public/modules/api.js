@@ -1,8 +1,7 @@
-// API Module - Handles all API communication
 const API_BASE = "/api/forms";
 const PUBLIC_BASE = "/api/public/forms";
 
-function deviceKey() {
+function getDeviceKey() {
   let key = localStorage.getItem("formfoundry_device_key");
   if (!key) {
     key = crypto.randomUUID();
@@ -11,60 +10,100 @@ function deviceKey() {
   return key;
 }
 
-async function apiFetch(url, options = {}) {
-  const res = await fetch(url, {
+async function request(url, options = {}, { isPublic = false } = {}) {
+  const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      "X-Device-Key": deviceKey(),
+      ...(isPublic ? {} : { "X-Device-Key": getDeviceKey() }),
       ...(options.headers || {}),
     },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Request failed");
-  return data;
-}
 
-async function publicFetch(url, options = {}) {
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Request failed");
-  return data;
-}
-
-async function exportFormResponses(formId, format = "json") {
-  const res = await fetch(
-    `${API_BASE}/${formId}/responses?format=${format}`,
-    { headers: { "X-Device-Key": deviceKey() } }
-  );
-  if (format === "csv") {
-    return res.text();
+  if (response.headers.get("content-type")?.includes("text/csv")) {
+    if (!response.ok) {
+      throw new Error("CSV export failed");
+    }
+    return response.text();
   }
-  return res.json();
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error || "Request failed");
+  }
+  return payload;
 }
 
-async function getFormAnalytics(formId) {
-  return apiFetch(`${API_BASE}/${formId}/analytics`);
+function listForms() {
+  return request(API_BASE);
 }
 
-async function duplicateForm(formId, newName) {
-  return apiFetch(`${API_BASE}/${formId}/duplicate`, {
+function createForm({ name, schema }) {
+  return request(API_BASE, {
     method: "POST",
-    body: JSON.stringify({ name: newName }),
+    body: JSON.stringify({ name, schema }),
   });
+}
+
+function getForm(id) {
+  return request(`${API_BASE}/${id}`);
+}
+
+function updateForm(id, payload) {
+  return request(`${API_BASE}/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+function publishForm(id) {
+  return request(`${API_BASE}/${id}/publish`, { method: "POST" });
+}
+
+function deleteForm(id) {
+  return request(`${API_BASE}/${id}`, { method: "DELETE" });
+}
+
+function listResponses(id, query = "") {
+  return request(`${API_BASE}/${id}/responses${query}`);
+}
+
+function exportResponsesCsv(id) {
+  return request(`${API_BASE}/${id}/responses?format=csv`);
+}
+
+function deleteResponse(responseId) {
+  return request(`/api/responses/${responseId}`, { method: "DELETE" });
+}
+
+function getPublicForm(slug) {
+  return request(`${PUBLIC_BASE}/${slug}`, {}, { isPublic: true });
+}
+
+function submitPublicForm(slug, response) {
+  return request(
+    `${PUBLIC_BASE}/${slug}/submit`,
+    {
+      method: "POST",
+      body: JSON.stringify({ response }),
+    },
+    { isPublic: true }
+  );
 }
 
 export {
-  apiFetch,
-  publicFetch,
-  exportFormResponses,
-  getFormAnalytics,
-  duplicateForm,
-  deviceKey,
+  API_BASE,
+  PUBLIC_BASE,
+  createForm,
+  deleteForm,
+  deleteResponse,
+  exportResponsesCsv,
+  getDeviceKey,
+  getForm,
+  getPublicForm,
+  listForms,
+  listResponses,
+  publishForm,
+  submitPublicForm,
+  updateForm,
 };
